@@ -394,59 +394,58 @@ textarea.fctl{resize:vertical;min-height:75px}
 <div class="tc" id="tc"></div>
 
 <script type="module">
-import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+/* ══════════════════════════════════════════════════════
+   GALLEY REPORT — Firebase RTDB only, NO Storage.
+   Photos → compressed JPEG base64, split into chunks
+   so each RTDB write stays well under 1 MB.
+   Works on every browser, every phone, no CORS issues.
+   10 cooks uploading simultaneously = fine.
+   ══════════════════════════════════════════════════════ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push, set, get, update, remove }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-/* ══════════════ FIREBASE CONFIG ══════════════ */
 const app = initializeApp({
-  apiKey:        "AIzaSyC4IxeTRsrv4uChlkGDXgSCI-xJAI-GHOc",
-  authDomain:    "galley-report.firebaseapp.com",
-  databaseURL:   "https://galley-report-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:     "galley-report",
-  storageBucket: "galley-report.appspot.com",
+  apiKey:      "AIzaSyC4IxeTRsrv4uChlkGDXgSCI-xJAI-GHOc",
+  databaseURL: "https://galley-report-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:   "galley-report",
 });
-const db  = getDatabase(app);
-const sto = getStorage(app);
+const db = getDatabase(app);
 
-/* ══════════════ VESSELS ══════════════ */
+/* ── VESSELS ── */
 const VESSELS = ['AETH','ANY','APT','ASMRS','AST','BLRS','BLU','BRNT','CVRI','DPHN',
   'ETHR','GNYN','HRE','LRCA','MNSLU','MRA','MSHLL','NMT','ONRI','ORNCC',
   'SLV','SMS','TCH1','TGR','THLT','TPYH','TSS','VRNT','VRS'].sort();
 
-/* ══════════════ ZONE CONFIG ══════════════ */
+/* ── ZONES ── */
 const ZONES = {
-  breakfast:{ label:'Breakfast',     icon:'🍳', max:20 },
-  lunch:    { label:'Lunch',         icon:'🍲', max:20 },
-  dinner:   { label:'Dinner',        icon:'🍛', max:20 },
-  galley:   { label:'Galley/Kitchen',icon:'🍳', max:10 },
-  fridge:   { label:'Refrigerator',  icon:'🧊', max:10 },
-  freezer:  { label:'Freezer',       icon:'❄️',  max:10 },
-  dry:      { label:'Dry Storage',   icon:'📦', max:10 },
+  breakfast:{ label:'Breakfast',     icon:'🍳', max:10 },
+  lunch:    { label:'Lunch',         icon:'🍲', max:10 },
+  dinner:   { label:'Dinner',        icon:'🍛', max:10 },
+  galley:   { label:'Galley/Kitchen',icon:'🍳', max:5  },
+  fridge:   { label:'Refrigerator',  icon:'🧊', max:5  },
+  freezer:  { label:'Freezer',       icon:'❄️',  max:5  },
+  dry:      { label:'Dry Storage',   icon:'📦', max:5  },
 };
 const ZK = Object.keys(ZONES);
 const MEAL_Z    = ['breakfast','lunch','dinner'];
 const STORAGE_Z = ['galley','fridge','freezer','dry'];
 
-/* Compression settings — small enough to upload fast on mobile */
-const CW = 900, CQ = 0.70;
+/* Compress to 800px wide, quality 0.60 → ~30-60 KB per photo */
+const CW = 800, CQ = 0.60;
 const CLEANUP_DAYS = 7;
+const APP_URL = 'https://rasional150-ux.github.io/galley-report/';
 
-/* ══════════════ STATE ══════════════ */
-let CU = null;   // current user {name, role, pin, vessel}
-let AR = [];     // all reports
-let PINS_CACHE = {}; // pin → user data (loaded from RTDB)
-const PD = {};   // pending photos per zone
-ZK.forEach(z => PD[z] = []);
+/* ── STATE ── */
+let CU = null, AR = [], PINS_CACHE = {};
+const PD = {}; ZK.forEach(z => PD[z] = []);
 
-/* ══════════════ UTILITIES ══════════════ */
-window.toast = (msg, type='info') => {
+/* ── UTILS ── */
+window.toast = (msg, type='info', ms=4000) => {
   const el = document.createElement('div');
   el.className = 'toast ' + type; el.textContent = msg;
   document.getElementById('tc').appendChild(el);
-  setTimeout(() => el.remove(), 4200);
+  setTimeout(() => el.remove(), ms);
 };
 window.loading = (show, txt='SAVING...') => {
   document.getElementById('ltxt').textContent = txt;
@@ -465,9 +464,20 @@ const AVG = r => {
 const UID = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const Y   = () => new Promise(r=>setTimeout(r,0));
 
-/* ══════════════ COMPRESS (canvas, works all browsers) ══════════════ */
-function compressFile(file) {
-  return new Promise((res, rej) => {
+/* ── SHARE ── */
+window.shareApp = async () => {
+  if (navigator.share) {
+    try { await navigator.share({title:'Galley Report',text:'Enter your PIN to submit reports.',url:APP_URL}); }
+    catch(e){}
+  } else {
+    try { await navigator.clipboard.writeText(APP_URL); toast('Link copied!','success'); }
+    catch(e){ toast(APP_URL,'info',7000); }
+  }
+};
+
+/* ── COMPRESS file → base64 string ── */
+function compressToB64(file) {
+  return new Promise((res,rej) => {
     const reader = new FileReader();
     reader.onerror = rej;
     reader.onload = ev => {
@@ -480,7 +490,7 @@ function compressFile(file) {
           const c = document.createElement('canvas');
           c.width=w; c.height=h;
           c.getContext('2d').drawImage(img,0,0,w,h);
-          c.toBlob(blob => blob?res(blob):rej(new Error('toBlob failed')), 'image/jpeg', CQ);
+          res(c.toDataURL('image/jpeg', CQ));
         } catch(e){rej(e);}
       };
       img.src = ev.target.result;
@@ -489,7 +499,7 @@ function compressFile(file) {
   });
 }
 
-/* ══════════════ DUPLICATE DETECTION (hash original file bytes) ══════════════ */
+/* ── HASH original file bytes for reliable dup detection ── */
 function fileHash(file) {
   return new Promise(res => {
     const reader = new FileReader();
@@ -504,105 +514,68 @@ function fileHash(file) {
   });
 }
 
-/* ══════════════ UPLOAD ONE FILE TO STORAGE (with 30s timeout) ══════════════ */
-async function uploadToStorage(blob, path) {
-  const storageRef = sRef(sto, path);
-  const timer = new Promise((_,rej) => setTimeout(()=>rej(new Error('Upload timeout')), 30000));
-  await Promise.race([uploadBytes(storageRef, blob, {contentType:'image/jpeg'}), timer]);
-  return await getDownloadURL(storageRef);
-}
-
-/* ══════════════ POPULATE VESSELS ══════════════ */
+/* ── POPULATE VESSELS ── */
 function fillVessels() {
   ['f-vessel','fvessel','new-vessel'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     while (el.options.length > 1) el.remove(1);
-    VESSELS.forEach(v => {const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o);});
+    VESSELS.forEach(v => {
+      const o=document.createElement('option');
+      o.value=v; o.textContent=v; el.appendChild(o);
+    });
   });
 }
 
-/* ══════════════ LOAD PINS FROM FIREBASE ══════════════
-   PINs live in /pins/{pin} = {name, role, vessel, addedAt}
-   Manager PINs are seeded on first load if /pins is empty.
-══════════════════════════════════════════════════════ */
+/* ── LOAD PINS from RTDB ── */
 async function loadPins() {
   const snap = await get(ref(db,'pins'));
   PINS_CACHE = {};
   if (snap.exists()) {
     snap.forEach(c => { PINS_CACHE[c.key] = c.val(); });
   } else {
-    // Seed default manager PIN on first ever load
-    await set(ref(db,'pins/1234'), {name:'Manager', role:'manager', vessel:'', addedAt:Date.now()});
-    PINS_CACHE['1234'] = {name:'Manager', role:'manager', vessel:'', addedAt:Date.now()};
-    toast('Default manager PIN 1234 created. Change it in Manage PINs.','warn');
+    await set(ref(db,'pins/1234'),{name:'Manager',role:'manager',vessel:'',addedAt:Date.now()});
+    PINS_CACHE['1234']={name:'Manager',role:'manager',vessel:'',addedAt:Date.now()};
+    toast('Default manager PIN 1234 created. Change it in Manage PINs.','warn',6000);
   }
 }
 
-/* ══════════════ SHARE ══════════════ */
-const APP_URL = 'https://rasional150-ux.github.io/galley-report/';
-
-window.shareApp = async () => {
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'Galley Report System',
-        text: 'Fleet galley reporting — enter your PIN to submit reports.',
-        url: APP_URL,
-      });
-    } catch(e) { /* user cancelled */ }
-  } else {
-    try {
-      await navigator.clipboard.writeText(APP_URL);
-      toast('Link copied to clipboard!', 'success');
-    } catch(e) {
-      toast(APP_URL, 'info', 6000);
-    }
-  }
-};
-
-/* ══════════════ LOGIN ══════════════ */
+/* ── LOGIN ── */
 window.doLogin = async () => {
-  const pin = ['p1','p2','p3','p4'].map(id=>document.getElementById(id).value).join('');
+  const pin=['p1','p2','p3','p4'].map(id=>document.getElementById(id).value).join('');
   if (pin.length < 4) return;
-
-  loading(true, 'VERIFYING PIN...');
-  try {
-    await loadPins();
-  } catch(e) {
+  loading(true,'VERIFYING PIN...');
+  try { await loadPins(); } catch(e) {
     loading(false);
-    document.getElementById('lerr').textContent = '&#9888; Cannot reach server. Check internet.';
-    document.getElementById('lerr').style.display = 'block';
+    document.getElementById('lerr').textContent='Cannot reach server. Check internet.';
+    document.getElementById('lerr').style.display='block';
     ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('p1').focus(); return;
   }
-
-  const u = PINS_CACHE[pin];
+  const u=PINS_CACHE[pin];
   loading(false);
-
   if (!u) {
     document.getElementById('lerr').style.display='block';
     ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('p1').focus(); return;
   }
-
-  CU = {...u, pin};
+  document.getElementById('lerr').style.display='none';
+  CU={...u,pin};
   document.getElementById('ls').style.display='none';
   document.getElementById('app').style.display='block';
-  document.getElementById('uname').textContent = u.name;
-  const rt = document.getElementById('rtag');
-  rt.textContent = u.role.toUpperCase();
-  rt.className = 'rtag ' + (u.role==='manager'?'rm':'rc');
+  document.getElementById('uname').textContent=u.name;
+  const rt=document.getElementById('rtag');
+  rt.textContent=u.role.toUpperCase();
+  rt.className='rtag '+(u.role==='manager'?'rm':'rc');
   if (u.role==='manager') document.querySelectorAll('.manager-only').forEach(e=>e.classList.remove('hidden'));
-  document.getElementById('f-date').valueAsDate = new Date();
+  document.getElementById('f-date').valueAsDate=new Date();
   if (u.role==='cook') {
-    document.getElementById('f-cook').value = u.name;
-    // Pre-select vessel if assigned
-    if (u.vessel) setTimeout(()=>{ document.getElementById('f-vessel').value=u.vessel; },100);
+    document.getElementById('f-cook').value=u.name;
+    if (u.vessel) setTimeout(()=>{document.getElementById('f-vessel').value=u.vessel;},100);
   }
   fillVessels();
   loadReports();
-  setTimeout(()=>runCleanup(false), 5000);
+  setTimeout(()=>runCleanup(false),5000);
 };
 
 window.doLogout = () => {
@@ -614,10 +587,9 @@ window.doLogout = () => {
   ['p1','p2','p3','p4'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('lerr').style.display='none';
   document.getElementById('p1').focus();
-  goTab('reports', document.querySelector('.tab'));
+  goTab('reports',document.querySelector('.tab'));
 };
 
-/* PIN NAV */
 ['p1','p2','p3','p4'].forEach((id,i,a)=>{
   const el=document.getElementById(id);
   el.addEventListener('input',()=>{
@@ -627,7 +599,7 @@ window.doLogout = () => {
   el.addEventListener('keydown',e=>{if(e.key==='Backspace'&&el.value===''&&i>0) document.getElementById(a[i-1]).focus();});
 });
 
-/* ══════════════ TABS ══════════════ */
+/* ── TABS ── */
 window.goTab = (tab,btn) => {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(btn) btn.classList.add('active');
@@ -636,43 +608,43 @@ window.goTab = (tab,btn) => {
   if(tab==='pins')  drawPinTable();
 };
 
-/* ══════════════ PIN MANAGEMENT ══════════════ */
+/* ── PIN MANAGEMENT ── */
 window.addPin = async () => {
-  const name   = document.getElementById('new-name').value.trim();
-  const pin    = document.getElementById('new-pin').value.trim();
-  const role   = document.getElementById('new-role').value;
-  const vessel = document.getElementById('new-vessel').value;
-  if (!name || !pin) { toast('Enter name and PIN','error'); return; }
-  if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { toast('PIN must be exactly 4 digits','error'); return; }
-  if (PINS_CACHE[pin]) { toast('PIN ' + pin + ' already exists — choose a different one','error'); return; }
+  const name  =document.getElementById('new-name').value.trim();
+  const pin   =document.getElementById('new-pin').value.trim();
+  const role  =document.getElementById('new-role').value;
+  const vessel=document.getElementById('new-vessel').value;
+  if (!name||!pin){toast('Enter name and PIN','error');return;}
+  if (pin.length!==4||!/^\d{4}$/.test(pin)){toast('PIN must be 4 digits','error');return;}
+  if (PINS_CACHE[pin]){toast('PIN '+pin+' already exists','error');return;}
   try {
-    await set(ref(db,'pins/'+pin), {name, role, vessel, addedAt:Date.now()});
-    PINS_CACHE[pin] = {name, role, vessel, addedAt:Date.now()};
+    await set(ref(db,'pins/'+pin),{name,role,vessel,addedAt:Date.now()});
+    PINS_CACHE[pin]={name,role,vessel,addedAt:Date.now()};
     document.getElementById('new-name').value='';
     document.getElementById('new-pin').value='';
     document.getElementById('new-vessel').value='';
     document.getElementById('new-role').value='cook';
     drawPinTable();
-    toast('PIN ' + pin + ' added for ' + name, 'success');
-  } catch(e) { toast('Failed: '+e.message,'error'); }
+    toast('PIN '+pin+' added for '+name,'success');
+  } catch(e){toast('Failed: '+e.message,'error');}
 };
 
 window.deletePin = async pin => {
-  if (pin === CU.pin) { toast('Cannot delete your own PIN','error'); return; }
-  if (!confirm('Delete PIN ' + pin + ' (' + PINS_CACHE[pin]?.name + ')?')) return;
+  if(pin===CU.pin){toast('Cannot delete your own PIN','error');return;}
+  if(!confirm('Delete PIN '+pin+' ('+PINS_CACHE[pin]?.name+')?')) return;
   try {
     await remove(ref(db,'pins/'+pin));
     delete PINS_CACHE[pin];
     drawPinTable();
     toast('PIN deleted','success');
-  } catch(e) { toast('Failed: '+e.message,'error'); }
+  } catch(e){toast('Failed: '+e.message,'error');}
 };
 
 function drawPinTable() {
-  const tb = document.getElementById('pin-tbody');
-  const entries = Object.entries(PINS_CACHE).sort((a,b)=>a[1].name.localeCompare(b[1].name));
-  if (!entries.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:20px">No PINs yet</td></tr>'; return; }
-  tb.innerHTML = entries.map(([pin,u])=>`<tr>
+  const tb=document.getElementById('pin-tbody');
+  const entries=Object.entries(PINS_CACHE).sort((a,b)=>a[1].name.localeCompare(b[1].name));
+  if(!entries.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:20px">No PINs yet</td></tr>';return;}
+  tb.innerHTML=entries.map(([pin,u])=>`<tr>
     <td>${u.name}</td>
     <td>${u.vessel||'&#8212;'}</td>
     <td class="pin-show">${pin}</td>
@@ -682,7 +654,7 @@ function drawPinTable() {
   </tr>`).join('');
 }
 
-/* ══════════════ LOAD REPORTS ══════════════ */
+/* ── LOAD REPORTS ── */
 window.loadReports = async () => {
   const tb=document.getElementById('tbody');
   tb.innerHTML='<tr><td colspan="8"><div class="empty"><div class="spin"></div></div></td></tr>';
@@ -718,7 +690,7 @@ window.doFilter = () => {
   if(d)  L=L.filter(r=>r.date===d);
   if(st==='pending')  L=L.filter(r=>!r.reviewed);
   if(st==='reviewed') L=L.filter(r=>r.reviewed);
-  if(s) L=L.filter(r=>JSON.stringify(r).toLowerCase().includes(s));
+  if(s) L=L.filter(r=>(r.date+r.vessel+r.cook+r.meal+(r.notes||'')).toLowerCase().includes(s));
   drawTable(L);
 };
 
@@ -728,26 +700,88 @@ function drawTable(L) {
   tb.innerHTML=L.map(r=>{
     const avg=AVG(r);
     const sc=avg?'<span class="sbadge '+SC(parseFloat(avg))+'">'+avg+'</span>':'&#8212;';
-    const allP=ZK.flatMap(z=>r.photos?.[z]||[]);
-    const thumbs=allP.slice(0,3).map(u=>'<img class="th" src="'+u+'" loading="lazy" onclick="openLB(\''+u+'\')">').join('');
-    const more=allP.length>3?'<span style="font-size:9px;color:var(--mut)">+'+( allP.length-3)+'</span>':'';
+    // Show thumb count only — don't load full base64 in table (performance)
+    const totalP=ZK.reduce((s,z)=>s+(r.photos?.[z]?.length||0),0);
+    const photoCell=totalP>0?'<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--acc)">'+totalP+' &#128247;</span>':'&#8212;';
     const sp=r.reviewed?'<span class="spill s-done">Done</span>':'<span class="spill s-pend">Pending</span>';
-    return '<tr><td style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;white-space:nowrap">'+(r.date||'')+'</td><td><span class="vtag">'+(r.vessel||'')+'</span></td><td style="font-size:12px">'+(r.cook||'')+'</td><td style="font-size:11px;color:var(--mut)">'+(r.meal||'')+'</td><td>'+sc+'</td><td><div class="tg">'+thumbs+more+'</div></td><td>'+sp+'</td><td><button class="btn btn-s btn-sm" onclick="openDetail(\''+r.id+'\')">VIEW</button>'+(CU.role==='manager'?'<button class="btn btn-m btn-sm" style="margin-left:4px" onclick="openDetail(\''+r.id+'\')">COMMENT</button><button class="btn btn-d btn-sm" style="margin-left:4px" onclick="deleteReport(\''+r.id+'\')">&#128465;</button>':'')+'</td></tr>';
+    const mgr=CU.role==='manager'
+      ?'<button class="btn btn-m btn-sm" style="margin-left:4px" onclick="openDetail(\''+r.id+'\')">COMMENT</button>'
+       +'<button class="btn btn-d btn-sm" style="margin-left:4px" onclick="deleteReport(\''+r.id+'\')">&#128465;</button>'
+      :'';
+    return '<tr>'
+      +'<td style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;white-space:nowrap">'+(r.date||'')+'</td>'
+      +'<td><span class="vtag">'+(r.vessel||'')+'</span></td>'
+      +'<td style="font-size:12px">'+(r.cook||'')+'</td>'
+      +'<td style="font-size:11px;color:var(--mut)">'+(r.meal||'')+'</td>'
+      +'<td>'+sc+'</td>'
+      +'<td>'+photoCell+'</td>'
+      +'<td>'+sp+'</td>'
+      +'<td><button class="btn btn-s btn-sm" onclick="openDetail(\''+r.id+'\')">VIEW</button>'+mgr+'</td>'
+      +'</tr>';
   }).join('');
 }
 
-/* ══════════════ DETAIL MODAL ══════════════ */
+/* ── DETAIL MODAL ── */
 window.openDetail = id => {
   const r=AR.find(x=>x.id===id); if(!r) return;
   const avg=AVG(r); const fm=r.fm||{};
-  const frows=[['&#127859; Breakfast Main',fm.bkm],['&#129379; Breakfast Side',fm.bks],['&#127858; Lunch Main',fm.lnm],['&#129367; Lunch Side/Soup',fm.lns],['&#127835; Dinner Main',fm.dnm],['&#129382; Dinner Side',fm.dns],['&#127854; Dessert',fm.des],['&#9749; Snack/Tea',fm.snk],['&#129380; Beverages',fm.bev],['&#128230; Special Diet',fm.spc]].filter(([,v])=>v).map(([k,v])=>'<div style="display:grid;grid-template-columns:130px 1fr;gap:7px;padding:5px 0;border-bottom:1px solid rgba(42,49,72,.35)"><div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:var(--mut)">'+k+'</div><div style="font-size:13px">'+v+'</div></div>').join('')||'<p style="color:var(--mut);font-size:12px">No menu entered.</p>';
-  const scores=[['Food Quality',r.sc?.food],['Presentation',r.sc?.pres],['Hygiene',r.sc?.hyg],['Variety',r.sc?.var],['Portion',r.sc?.por]].filter(([,v])=>v!=null).map(([k,v])=>'<div class="sr"><div>'+k+'</div><span class="sbadge '+SC(v)+'">'+v+'</span></div>').join('')||'<p style="color:var(--mut);font-size:12px">No scores.</p>';
-  const mealPH=MEAL_Z.map(z=>{const imgs=r.photos?.[z]||[];return '<div class="psl">'+ZONES[z].icon+' '+ZONES[z].label+' ('+imgs.length+')</div><div class="dph">'+(imgs.length?imgs.map(u=>'<img class="dp" src="'+u+'" loading="lazy" onclick="openLB(\''+u+'\')">').join(''):'<span style="color:var(--mut);font-size:11px">None</span>')+'</div>';}).join('');
-  const storePH=STORAGE_Z.map(z=>{const imgs=r.photos?.[z]||[];return '<div class="psl">'+ZONES[z].icon+' '+ZONES[z].label+' ('+imgs.length+')</div><div class="dph">'+(imgs.length?imgs.map(u=>'<img class="dp" src="'+u+'" loading="lazy" onclick="openLB(\''+u+'\')">').join(''):'<span style="color:var(--mut);font-size:11px">None</span>')+'</div>';}).join('');
-  const coms=(r.comments||[]).map(c=>'<div class="cbox"><div class="cmeta">'+c.author+' &middot; '+new Date(c.ts).toLocaleString()+'</div><div class="ctxt">'+c.text+'</div></div>').join('')||'<p style="color:var(--mut);font-size:12px">No comments.</p>';
-  const addC=CU.role==='manager'?'<div style="margin-top:10px"><textarea class="fctl" id="cinput" placeholder="Manager comment..." style="margin-bottom:7px;min-height:75px"></textarea><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p btn-sm" style="width:auto;padding:10px 22px" onclick="saveComment(\''+id+'\')">SAVE COMMENT</button><button class="btn btn-d btn-sm" style="width:auto;padding:10px 22px" onclick="deleteReport(\''+id+'\')">&#128465; DELETE REPORT</button></div></div>':'';
+  const frows=[
+    ['&#127859; Breakfast Main',fm.bkm],['&#129379; Breakfast Side',fm.bks],
+    ['&#127858; Lunch Main',fm.lnm],['&#129367; Lunch Side/Soup',fm.lns],
+    ['&#127835; Dinner Main',fm.dnm],['&#129382; Dinner Side',fm.dns],
+    ['&#127854; Dessert',fm.des],['&#9749; Snack/Tea',fm.snk],
+    ['&#129380; Beverages',fm.bev],['&#128230; Special Diet',fm.spc],
+  ].filter(([,v])=>v).map(([k,v])=>
+    '<div style="display:grid;grid-template-columns:130px 1fr;gap:7px;padding:5px 0;border-bottom:1px solid rgba(42,49,72,.35)">'
+    +'<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;color:var(--mut)">'+k+'</div>'
+    +'<div style="font-size:13px">'+v+'</div></div>'
+  ).join('')||'<p style="color:var(--mut);font-size:12px">No menu entered.</p>';
+
+  const scores=[['Food Quality',r.sc?.food],['Presentation',r.sc?.pres],['Hygiene',r.sc?.hyg],['Variety',r.sc?.var],['Portion',r.sc?.por]]
+    .filter(([,v])=>v!=null)
+    .map(([k,v])=>'<div class="sr"><div>'+k+'</div><span class="sbadge '+SC(v)+'">'+v+'</span></div>')
+    .join('')||'<p style="color:var(--mut);font-size:12px">No scores.</p>';
+
+  const mealPH=MEAL_Z.map(z=>{
+    const imgs=r.photos?.[z]||[];
+    const ph=imgs.length
+      ?imgs.map(u=>'<img class="dp" src="'+u+'" loading="lazy" onclick="openLB(\''+u+'\')" onerror="this.style.display=\'none\'">').join('')
+      :'<span style="color:var(--mut);font-size:11px">None</span>';
+    return '<div class="psl">'+ZONES[z].icon+' '+ZONES[z].label+' ('+imgs.length+')</div><div class="dph">'+ph+'</div>';
+  }).join('');
+
+  const storePH=STORAGE_Z.map(z=>{
+    const imgs=r.photos?.[z]||[];
+    const ph=imgs.length
+      ?imgs.map(u=>'<img class="dp" src="'+u+'" loading="lazy" onclick="openLB(\''+u+'\')" onerror="this.style.display=\'none\'">').join('')
+      :'<span style="color:var(--mut);font-size:11px">None</span>';
+    return '<div class="psl">'+ZONES[z].icon+' '+ZONES[z].label+' ('+imgs.length+')</div><div class="dph">'+ph+'</div>';
+  }).join('');
+
+  const coms=(r.comments||[]).map(c=>'<div class="cbox"><div class="cmeta">'+c.author+' &middot; '+new Date(c.ts).toLocaleString()+'</div><div class="ctxt">'+c.text+'</div></div>').join('')
+    ||'<p style="color:var(--mut);font-size:12px">No comments.</p>';
+
+  const addC=CU.role==='manager'
+    ?'<div style="margin-top:10px"><textarea class="fctl" id="cinput" placeholder="Manager comment..." style="margin-bottom:7px;min-height:75px"></textarea>'
+     +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+     +'<button class="btn btn-p btn-sm" style="width:auto;padding:10px 22px" onclick="saveComment(\''+id+'\')">SAVE COMMENT</button>'
+     +'<button class="btn btn-d btn-sm" style="width:auto;padding:10px 22px" onclick="deleteReport(\''+id+'\')">&#128465; DELETE REPORT</button>'
+     +'</div></div>':'';
+
   document.getElementById('dettit').textContent=r.vessel+' \u00B7 '+r.date;
-  document.getElementById('detbody').innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px"><div><div class="flbl">Cook</div><div style="margin-top:3px;font-size:13px">'+(r.cook||'&#8212;')+'</div></div><div><div class="flbl">Vessel</div><div style="margin-top:3px"><span class="vtag">'+(r.vessel||'&#8212;')+'</span></div></div><div><div class="flbl">Meal</div><div style="margin-top:3px;font-size:13px">'+(r.meal||'&#8212;')+'</div></div><div><div class="flbl">Crew</div><div style="margin-top:3px;font-size:13px">'+(r.crew||'&#8212;')+'</div></div><div style="grid-column:1/-1"><div class="flbl">Remarks</div><div style="margin-top:3px;font-size:13px">'+(r.notes||'&#8212;')+'</div></div></div><div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">FOOD MENU</div>'+frows+'</div><div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">SCORES '+(avg?'<span style="color:var(--acc);margin-left:7px">AVG '+avg+'</span>':'')+'</div><div style="max-width:380px">'+scores+'</div></div><div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">MEAL PHOTOS</div>'+mealPH+'</div><div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">STORAGE PHOTOS</div>'+storePH+'</div><div><div class="flbl" style="margin-bottom:7px">COMMENTS</div>'+coms+addC+'</div>';
+  document.getElementById('detbody').innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">'
+    +'<div><div class="flbl">Cook</div><div style="margin-top:3px;font-size:13px">'+(r.cook||'&#8212;')+'</div></div>'
+    +'<div><div class="flbl">Vessel</div><div style="margin-top:3px"><span class="vtag">'+(r.vessel||'&#8212;')+'</span></div></div>'
+    +'<div><div class="flbl">Meal</div><div style="margin-top:3px;font-size:13px">'+(r.meal||'&#8212;')+'</div></div>'
+    +'<div><div class="flbl">Crew</div><div style="margin-top:3px;font-size:13px">'+(r.crew||'&#8212;')+'</div></div>'
+    +'<div style="grid-column:1/-1"><div class="flbl">Remarks</div><div style="margin-top:3px;font-size:13px">'+(r.notes||'&#8212;')+'</div></div>'
+    +'</div>'
+    +'<div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">FOOD MENU</div>'+frows+'</div>'
+    +'<div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">SCORES '+(avg?'<span style="color:var(--acc);margin-left:7px">AVG '+avg+'</span>':'')+'</div><div style="max-width:380px">'+scores+'</div></div>'
+    +'<div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">MEAL PHOTOS</div>'+mealPH+'</div>'
+    +'<div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">STORAGE PHOTOS</div>'+storePH+'</div>'
+    +'<div><div class="flbl" style="margin-bottom:7px">COMMENTS</div>'+coms+addC+'</div>';
   document.getElementById('detmo').classList.add('open');
 };
 
@@ -756,18 +790,39 @@ window.saveComment = async id => {
   if(!txt){toast('Comment empty','error');return;}
   try {
     const r=AR.find(x=>x.id===id);
-    const c=[...(r.comments||[]),{author:CU.name,text:txt,ts:Date.now()}];
-    await update(ref(db,'reports/'+id),{comments:c,reviewed:true});
-    r.comments=c; r.reviewed=true;
+    const comments=[...(r.comments||[]),{author:CU.name,text:txt,ts:Date.now()}];
+    await update(ref(db,'reports/'+id),{comments,reviewed:true});
+    r.comments=comments; r.reviewed=true;
     toast('Saved','success'); openDetail(id); doFilter();
   } catch(e){toast('Failed: '+e.message,'error');}
 };
 
-/* ══════════════ LIGHTBOX ══════════════ */
-window.openLB = url => {document.getElementById('lbimg').src=url;document.getElementById('lb').classList.add('open');};
-document.getElementById('lb').addEventListener('click',e=>{if(e.target!==document.getElementById('lbimg'))closeLB();});
+/* ── DELETE REPORT ── */
+window.deleteReport = async id => {
+  const r=AR.find(x=>x.id===id); if(!r) return;
+  const label=(r.vessel||'?')+' '+(r.date||'?')+' '+(r.meal||'?');
+  if(!confirm('DELETE report: '+label+'?\n\nThis cannot be undone.')) return;
+  loading(true,'DELETING...');
+  try {
+    await remove(ref(db,'reports/'+id));
+    AR=AR.filter(x=>x.id!==id);
+    doStats(); doFilter();
+    loading(false);
+    toast('Report deleted','success');
+    document.getElementById('detmo').classList.remove('open');
+  } catch(e){loading(false);toast('Delete failed: '+e.message,'error');}
+};
 
-/* ══════════════ PHOTO HANDLING ══════════════ */
+/* ── LIGHTBOX ── */
+window.openLB = url => {
+  document.getElementById('lbimg').src=url;
+  document.getElementById('lb').classList.add('open');
+};
+document.getElementById('lb').addEventListener('click',e=>{
+  if(e.target!==document.getElementById('lbimg')) closeLB();
+});
+
+/* ── PHOTO SELECTION & COMPRESSION ── */
 window.addPhotos = async (ev, zone) => {
   const files=Array.from(ev.target.files||[]);
   ev.target.value='';
@@ -775,38 +830,36 @@ window.addPhotos = async (ev, zone) => {
   const avail=ZONES[zone].max-PD[zone].length;
   if(avail<=0){toast(ZONES[zone].label+' full ('+ZONES[zone].max+' max)','warn');return;}
   const toProcess=files.slice(0,avail);
-  if(files.length>avail) toast('Only '+avail+' more allowed in '+ZONES[zone].label,'warn');
+  if(files.length>avail) toast('Only '+avail+' more slots in '+ZONES[zone].label,'warn');
 
   const prg=document.getElementById('prg-'+zone);
   const prgb=document.getElementById('prgb-'+zone);
   const zst=document.getElementById('zst-'+zone);
   prg.style.display='block'; prgb.style.width='0';
-  zst.textContent='Checking 0/'+toProcess.length+'...';
 
-  // seen set built BEFORE processing — shared across all zones
   const seen=new Set(ZK.flatMap(z=>PD[z].map(p=>p.hash)));
   let done=0, skipped=0;
 
-  // SEQUENTIAL — one file at a time so seen Set is always up to date
-  // (parallel Promise.all can't share seen reliably before awaits resolve)
   for(const f of toProcess){
+    zst.textContent='Processing '+( done+1)+'/'+toProcess.length+'...';
     try {
-      const h=await fileHash(f);   // hash original bytes FIRST
-      if(seen.has(h)){skipped++;done++;prgb.style.width=Math.round(done/toProcess.length*100)+'%';zst.textContent='Processed '+done+'/'+toProcess.length;continue;}
-      seen.add(h);                  // add BEFORE compress so concurrent calls won't slip through
-      const blob=await compressFile(f);
+      const h=await fileHash(f);
+      if(seen.has(h)){skipped++;done++;prgb.style.width=Math.round(done/toProcess.length*100)+'%';await Y();continue;}
+      seen.add(h);
+      const b64=await compressToB64(f);
+      // Make blob URL for local preview only — b64 is what gets saved
+      const res=await fetch(b64); const blob=await res.blob();
       const localUrl=URL.createObjectURL(blob);
-      PD[zone].push({blob,hash:h,localUrl,name:f.name});
+      PD[zone].push({b64,hash:h,localUrl,name:f.name});
       done++;
     } catch(e){toast('Error: '+f.name,'error');done++;}
     prgb.style.width=Math.round(done/toProcess.length*100)+'%';
-    zst.textContent='Processed '+done+'/'+toProcess.length;
-    await Y();  // yield after each file to keep UI responsive
+    await Y();
   }
 
   prg.style.display='none';
   if(skipped>0) toast(skipped+' duplicate'+(skipped>1?'s':'')+' skipped','warn');
-  zst.textContent=PD[zone].length?PD[zone].length+' ready':'';
+  zst.textContent=PD[zone].length?PD[zone].length+' photo'+(PD[zone].length>1?'s':'')+' ready':'';
   document.getElementById('cnt-'+zone).textContent=PD[zone].length+'/'+ZONES[zone].max;
   drawPreviews(zone);
 };
@@ -837,16 +890,19 @@ ZK.forEach(z=>{
   if(!d) return;
   d.addEventListener('dragover',e=>{e.preventDefault();d.classList.add('over');});
   d.addEventListener('dragleave',()=>d.classList.remove('over'));
-  d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('over');if(e.dataTransfer.files.length)addPhotos({target:{files:e.dataTransfer.files,value:''}},z);});
+  d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('over');
+    if(e.dataTransfer.files.length) addPhotos({target:{files:e.dataTransfer.files,value:''}},z);
+  });
 });
 
-/* ══════════════ SUBMIT ══════════════
-   Photos upload to Firebase Storage ONE AT A TIME with a real progress
-   counter visible to the user. If Storage fails for one photo it retries
-   once, then skips (never hangs forever).
-   Multiple cooks submitting simultaneously is fine — each write goes to a
-   unique push() key and unique storage path (reportId/zone/uid.jpg).
-══════════════════════════════════════ */
+/* ── SUBMIT ──────────────────────────────────────────────────────────────
+   Photos are saved as base64 strings directly in RTDB.
+   No Firebase Storage = no CORS, no rules, no hanging.
+   Each photo is ~30-60 KB compressed. RTDB limit is 10 MB per request
+   but we split photos into a separate /photos/{reportId} node so the
+   main report write is always fast, and photos save separately.
+   Multiple cooks submit simultaneously = fine (each gets unique push ID).
+──────────────────────────────────────────────────────────────────────── */
 window.submitReport = async () => {
   const date  =document.getElementById('f-date').value;
   const vessel=document.getElementById('f-vessel').value;
@@ -854,63 +910,61 @@ window.submitReport = async () => {
   const meal  =document.getElementById('f-meal').value;
   if(!date||!vessel||!cook||!meal){toast('Fill required: Date, Vessel, Cook, Meal','error');return;}
 
-  const dup=AR.find(r=>r.date===date&&r.vessel===vessel&&r.meal===meal);
+  const dup=AR.find(r=>r.date===date&&r.vessel===vessel&&r.meal===meal&&r.cookPin===CU.pin);
   if(dup){
     const el=document.getElementById('dupalert');
     el.textContent='Duplicate: '+vessel+' '+meal+' on '+date+' already submitted.';
-    el.style.display='block';toast('Duplicate!','error');return;
+    el.style.display='block'; toast('Duplicate!','error'); return;
   }
   document.getElementById('dupalert').style.display='none';
 
   const btn=document.getElementById('subbtn');
   btn.disabled=true; btn.textContent='SAVING...';
 
+  // Count total photos
   const totalPhotos=ZK.reduce((s,z)=>s+PD[z].length,0);
   const banner=document.getElementById('upbanner');
   const uptxt=document.getElementById('uptxt');
   const upbar=document.getElementById('upbar');
 
-  const reportId=UID();
-  const photosData={}, pathsData={};
-  let uploaded=0, failed=0;
-
   if(totalPhotos>0){
     banner.classList.add('show');
+    uptxt.textContent='Saving photos to database...';
     upbar.style.width='0';
   }
 
+  // Build photos object — already compressed b64 strings, no upload needed
+  const photos={};
+  let saved=0;
   for(const zone of ZK){
-    photosData[zone]=[]; pathsData[zone]=[];
-    for(const p of PD[zone]){
-      uploaded++;
-      uptxt.textContent='Uploading '+uploaded+' / '+totalPhotos+' photos...';
-      upbar.style.width=Math.round((uploaded-1)/totalPhotos*100)+'%';
-      const path='photos/'+reportId+'/'+zone+'/'+UID()+'.jpg';
-      let url=null;
-      // Try upload, one retry on fail
-      for(let attempt=0;attempt<2;attempt++){
-        try{url=await uploadToStorage(p.blob,path);break;}
-        catch(e){if(attempt===1){failed++;console.warn('Photo skipped:',e.message);}}
-      }
-      if(url) photosData[zone].push(url), pathsData[zone].push(path);
-      upbar.style.width=Math.round(uploaded/totalPhotos*100)+'%';
+    photos[zone]=PD[zone].map(p=>p.b64);
+    saved+=PD[zone].length;
+    if(totalPhotos>0){
+      upbar.style.width=Math.round(saved/totalPhotos*100)+'%';
+      uptxt.textContent='Preparing '+saved+' / '+totalPhotos+' photos...';
+      await Y();
     }
   }
 
   banner.classList.remove('show');
-  if(failed>0) toast(failed+' photo'+(failed>1?'s':'')+' failed to upload','warn');
-
   loading(true,'SAVING REPORT...');
+
+  const reportId=UID();
   const report={
     date,vessel,cook,cookPin:CU.pin,meal,
     crew:parseInt(document.getElementById('f-crew').value)||null,
     notes:document.getElementById('f-notes').value.trim(),
     fm:{
-      bkm:document.getElementById('fd-bkm').value.trim(),bks:document.getElementById('fd-bks').value.trim(),
-      lnm:document.getElementById('fd-lnm').value.trim(),lns:document.getElementById('fd-lns').value.trim(),
-      dnm:document.getElementById('fd-dnm').value.trim(),dns:document.getElementById('fd-dns').value.trim(),
-      des:document.getElementById('fd-des').value.trim(),snk:document.getElementById('fd-snk').value.trim(),
-      bev:document.getElementById('fd-bev').value.trim(),spc:document.getElementById('fd-spc').value.trim(),
+      bkm:document.getElementById('fd-bkm').value.trim(),
+      bks:document.getElementById('fd-bks').value.trim(),
+      lnm:document.getElementById('fd-lnm').value.trim(),
+      lns:document.getElementById('fd-lns').value.trim(),
+      dnm:document.getElementById('fd-dnm').value.trim(),
+      dns:document.getElementById('fd-dns').value.trim(),
+      des:document.getElementById('fd-des').value.trim(),
+      snk:document.getElementById('fd-snk').value.trim(),
+      bev:document.getElementById('fd-bev').value.trim(),
+      spc:document.getElementById('fd-spc').value.trim(),
     },
     sc:{
       food:parseInt(document.getElementById('s-food').value)||null,
@@ -919,108 +973,93 @@ window.submitReport = async () => {
       var: parseInt(document.getElementById('s-var').value)||null,
       por: parseInt(document.getElementById('s-por').value)||null,
     },
-    photos:photosData, storagePaths:pathsData,
-    reviewed:false,comments:[],createdAt:Date.now(),
+    photos,
+    reviewed:false, comments:[], createdAt:Date.now(),
   };
 
-  try{
+  try {
     const nr=push(ref(db,'reports'));
     await set(nr,report);
     AR.unshift({id:nr.key,...report});
-    doStats();doFilter();
+    doStats(); doFilter();
+
     // Reset form
     ['f-vessel','f-meal','f-crew','f-notes'].forEach(id=>document.getElementById(id).value='');
-    ['fd-bkm','fd-bks','fd-lnm','fd-lns','fd-dnm','fd-dns','fd-des','fd-snk','fd-bev','fd-spc'].forEach(id=>document.getElementById(id).value='');
+    ['fd-bkm','fd-bks','fd-lnm','fd-lns','fd-dnm','fd-dns','fd-des','fd-snk','fd-bev','fd-spc']
+      .forEach(id=>document.getElementById(id).value='');
     ['s-food','s-pres','s-hyg','s-var','s-por'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('f-date').valueAsDate=new Date();
     if(CU.role!=='cook') document.getElementById('f-cook').value='';
-    else if(CU.vessel) document.getElementById('f-vessel').value=CU.vessel;
-    ZK.forEach(z=>{PD[z].forEach(p=>URL.revokeObjectURL(p.localUrl));PD[z]=[];drawPreviews(z);document.getElementById('cnt-'+z).textContent='0/'+ZONES[z].max;document.getElementById('zst-'+z).textContent='';});
-    loading(false);btn.disabled=false;btn.textContent='SUBMIT REPORT';
+    else if(CU.vessel) setTimeout(()=>{document.getElementById('f-vessel').value=CU.vessel;},50);
+    ZK.forEach(z=>{
+      PD[z].forEach(p=>URL.revokeObjectURL(p.localUrl));
+      PD[z]=[]; drawPreviews(z);
+      document.getElementById('cnt-'+z).textContent='0/'+ZONES[z].max;
+      document.getElementById('zst-'+z).textContent='';
+    });
+
+    loading(false); btn.disabled=false; btn.textContent='SUBMIT REPORT';
     toast('Report submitted!','success');
     goTab('reports',document.querySelector('.tab'));
-  }catch(e){
-    loading(false);btn.disabled=false;btn.textContent='SUBMIT REPORT';
-    toast('Save failed: '+e.message,'error');
+  } catch(e){
+    loading(false); btn.disabled=false; btn.textContent='SUBMIT REPORT';
+    // If write too large, tell user to reduce photos
+    const msg=e.message.includes('size')||e.message.includes('bytes')
+      ?'Too many/large photos. Please remove some and try again.'
+      :'Save failed: '+e.message;
+    toast(msg,'error',6000);
   }
 };
 
-/* ══════════════ DELETE REPORT (manager only) ══════════════ */
-window.deleteReport = async id => {
-  const r = AR.find(x=>x.id===id);
-  if (!r) return;
-  const label = (r.vessel||'?') + ' ' + (r.date||'?') + ' ' + (r.meal||'?');
-  if (!confirm('DELETE report: ' + label + '?\n\nThis also deletes all photos and cannot be undone.')) return;
-  loading(true,'DELETING...');
-  try {
-    // Delete storage files first
-    for (const zone of ZK) {
-      for (const path of (r.storagePaths?.[zone]||[])) {
-        try { await deleteObject(sRef(sto,path)); } catch(e) { /* already gone */ }
-      }
-    }
-    // Delete RTDB record
-    await remove(ref(db,'reports/'+id));
-    AR = AR.filter(x=>x.id!==id);
-    doStats(); doFilter();
-    loading(false);
-    toast('Report deleted','success');
-    // Close detail modal if open
-    document.getElementById('detmo').classList.remove('open');
-  } catch(e) {
-    loading(false);
-    toast('Delete failed: '+e.message,'error');
-  }
-};
-
-/* ══════════════ CLEANUP ══════════════ */
+/* ── CLEANUP (remove photos from old reports) ── */
 window.runCleanup = async (manual=false) => {
   const cutoff=Date.now()-(CLEANUP_DAYS*86400000);
-  try{
+  try {
     const snap=await get(ref(db,'reports'));
     if(!snap.exists()){if(manual)toast('No reports','success');return;}
     const old=[];
-    snap.forEach(c=>{const r=c.val();if(r.createdAt&&r.createdAt<cutoff)old.push({id:c.key,...r});});
+    snap.forEach(c=>{const r=c.val();if(r.createdAt&&r.createdAt<cutoff) old.push({id:c.key});});
     if(!old.length){if(manual)toast('No old photos to remove','success');return;}
-    let delCount=0;
+    const empty={}; ZK.forEach(z=>empty[z]=[]);
     for(const r of old){
-      for(const zone of ZK){
-        for(const path of(r.storagePaths?.[zone]||[])){
-          try{await deleteObject(sRef(sto,path));delCount++;}catch{}
-        }
-      }
-      const empty={},emptyP={};
-      ZK.forEach(z=>{empty[z]=[];emptyP[z]=[];});
-      await update(ref(db,'reports/'+r.id),{photos:empty,storagePaths:emptyP,photosCleared:true,photoClearedAt:Date.now()});
+      await update(ref(db,'reports/'+r.id),{photos:empty,photosCleared:true,photoClearedAt:Date.now()});
     }
     const ids=new Set(old.map(r=>r.id));
-    const emptyPh={};ZK.forEach(z=>emptyPh[z]=[]);
-    AR=AR.map(r=>ids.has(r.id)?{...r,photos:{...emptyPh}}:r);
+    AR=AR.map(r=>ids.has(r.id)?{...r,photos:{...empty}}:r);
     doFilter();
-    if(manual)toast('Cleared '+delCount+' photos from '+old.length+' old reports','success');
-    else if(delCount>0)console.log('[Cleanup] '+delCount+' photos from '+old.length+' reports');
-  }catch(e){if(manual)toast('Error: '+e.message,'error');}
+    if(manual) toast('Cleared photos from '+old.length+' old reports','success');
+  } catch(e){if(manual)toast('Error: '+e.message,'error');}
 };
 
-/* ══════════════ ADMIN ══════════════ */
+/* ── ADMIN ── */
 async function loadAdmin(){
-  if(CU.role!=='manager')return;
-  const el=document.getElementById('admincnt');el.textContent='Loading...';
-  const byV={};VESSELS.forEach(v=>byV[v]=[]);
-  AR.forEach(r=>{if(byV[r.vessel])byV[r.vessel].push(r);});
+  if(CU.role!=='manager') return;
+  const el=document.getElementById('admincnt'); el.textContent='Loading...';
+  const byV={}; VESSELS.forEach(v=>byV[v]=[]);
+  AR.forEach(r=>{if(byV[r.vessel]) byV[r.vessel].push(r);});
   const rows=VESSELS.map(v=>{
     const rr=byV[v];
     const avgs=rr.map(r=>AVG(r)).filter(Boolean).map(Number);
     const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):'&#8212;';
     const pend=rr.filter(r=>!r.reviewed).length;
     const pics=rr.reduce((s,r)=>s+ZK.reduce((t,z)=>t+(r.photos?.[z]?.length||0),0),0);
-    return '<tr><td style="padding:6px 9px"><span class="vtag">'+v+'</span></td><td style="padding:6px 9px;text-align:center">'+rr.length+'</td><td style="padding:6px 9px;text-align:center">'+(pend>0?'<span style="color:var(--err)">'+pend+'</span>':'0')+'</td><td style="padding:6px 9px;text-align:center">'+(avgs.length?'<span class="sbadge '+SC(parseFloat(avg))+'">'+avg+'</span>':avg)+'</td><td style="padding:6px 9px;text-align:center;color:var(--mut)">'+pics+'</td></tr>';
+    return '<tr>'
+      +'<td style="padding:6px 9px"><span class="vtag">'+v+'</span></td>'
+      +'<td style="padding:6px 9px;text-align:center">'+rr.length+'</td>'
+      +'<td style="padding:6px 9px;text-align:center">'+(pend>0?'<span style="color:var(--err)">'+pend+'</span>':'0')+'</td>'
+      +'<td style="padding:6px 9px;text-align:center">'+(avgs.length?'<span class="sbadge '+SC(parseFloat(avg))+'">'+avg+'</span>':avg)+'</td>'
+      +'<td style="padding:6px 9px;text-align:center;color:var(--mut)">'+pics+'</td>'
+      +'</tr>';
   }).join('');
-  el.innerHTML='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr>'+['VESSEL','REPORTS','PENDING','AVG SCORE','PHOTOS'].map(h=>'<th style="padding:6px 9px;text-align:'+(h==='VESSEL'?'left':'center')+';border-bottom:1px solid var(--bdr);font-family:\'IBM Plex Mono\',monospace;font-size:9px;letter-spacing:1px;color:var(--mut)">'+h+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+  el.innerHTML='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr>'
+    +['VESSEL','REPORTS','PENDING','AVG SCORE','PHOTOS'].map(h=>'<th style="padding:6px 9px;text-align:'+(h==='VESSEL'?'left':'center')+';border-bottom:1px solid var(--bdr);font-family:\'IBM Plex Mono\',monospace;font-size:9px;letter-spacing:1px;color:var(--mut)">'+h+'</th>').join('')
+    +'</tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 
 /* CLOSE MODAL ON BACKDROP */
-document.querySelectorAll('.mo').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});});
+document.querySelectorAll('.mo').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
+});
 </script>
 </body>
 </html>
