@@ -12,15 +12,19 @@ html{-webkit-text-size-adjust:100%}
 body{font-family:"IBM Plex Sans",sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
 body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(245,166,35,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 #ls{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:100;background:var(--bg)}
-.lc{background:var(--sur);border:1px solid var(--bdr);border-top:3px solid var(--acc);padding:40px 32px;width:400px;max-width:94vw;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.lc{background:var(--sur);border:1px solid var(--bdr);border-top:3px solid var(--acc);padding:32px 24px;width:340px;max-width:95vw;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.6)}
 .lc::before{content:"";position:absolute;top:-3px;left:-1px;right:-1px;height:3px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
-.logo{font-family:"Bebas Neue",sans-serif;font-size:46px;letter-spacing:4px;color:var(--acc);line-height:1;margin-bottom:2px}
-.sub{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--mut);letter-spacing:3px;text-transform:uppercase;margin-bottom:36px}
-.lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block}
-.pins{display:flex;gap:10px;margin-bottom:28px}
-.pin{flex:1;height:60px;background:var(--bg);border:1px solid var(--bdr);color:var(--acc);font-family:"Bebas Neue",sans-serif;font-size:34px;text-align:center;outline:none;transition:border-color .2s;border-radius:0;-webkit-appearance:none}
-.pin:focus{border-color:var(--acc)}
-.lerr{color:var(--err);font-family:"IBM Plex Mono",monospace;font-size:12px;margin-top:10px;display:none}
+.logo{font-family:"Bebas Neue",sans-serif;font-size:42px;letter-spacing:4px;color:var(--acc);line-height:1;margin-bottom:2px}
+.sub{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--mut);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px}
+.pin-display{display:flex;justify-content:center;gap:14px;margin-bottom:16px}
+.pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);background:transparent;transition:all .15s}
+.pin-dot.filled{background:var(--acc);border-color:var(--acc);transform:scale(1.1)}
+.lerr{color:var(--err);font-family:"IBM Plex Mono",monospace;font-size:12px;margin-bottom:10px;text-align:center;display:none}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.npbtn{background:var(--sur2);border:1px solid var(--bdr);color:var(--txt);font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;padding:18px 10px;cursor:pointer;text-align:center;touch-action:manipulation;border-radius:4px;-webkit-appearance:none;user-select:none;width:100%;transition:background .1s}
+.npbtn:active{background:var(--acc);color:#000}
+.npbtn.del{font-size:16px;color:var(--mut)}
+.npbtn.enter{background:var(--acc);color:#000;font-size:14px}
 .btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 22px;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;-webkit-appearance:none;touch-action:manipulation;transition:opacity .15s}
 .btn:active{opacity:.8}
 .btn-p{background:var(--acc);color:#000;width:100%}
@@ -70,7 +74,6 @@ table.rt td{padding:11px;border-bottom:1px solid rgba(42,49,72,.4);vertical-alig
 .fctl:focus{border-color:var(--acc)}
 select.fctl{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='%236b7694'%3E%3Cpath d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:var(--bg);padding-right:30px}
 select.fctl option{background:var(--sur)}
-textarea.fctl{resize:vertical;min-height:75px}
 .foodg{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:14px}
 .fi{display:flex;flex-direction:column;gap:5px}
 .fi label{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
@@ -78,7 +81,6 @@ textarea.fctl{resize:vertical;min-height:75px}
 .fi input:focus{border-color:var(--acc)}
 .sr{display:grid;grid-template-columns:1fr 76px;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(42,49,72,.5)}
 .si{background:var(--bg);border:1px solid var(--bdr);color:var(--acc);padding:7px;font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:600;text-align:center;outline:none;width:100%;border-radius:0;-webkit-appearance:none}
-.si:focus{border-color:var(--acc)}
 .pzones{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:20px}
 .pzone{background:var(--sur);border:1px solid var(--bdr)}
 .pzh{padding:10px 13px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
@@ -90,18 +92,18 @@ textarea.fctl{resize:vertical;min-height:75px}
 .drop.over{border-color:var(--acc);background:rgba(245,166,35,.05)}
 .drop input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;font-size:0}
 .dico{font-size:20px}.dtxt{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--mut)}
-.zprog{height:3px;background:var(--bdr);margin-top:6px;display:none;overflow:hidden}
-.zprogb{height:100%;background:var(--acc);width:0;transition:width .1s}
+.zprog{height:6px;background:var(--bdr);margin-top:8px;display:none;overflow:hidden;border-radius:3px}
+.zprogb{height:100%;background:var(--acc);width:0;transition:width .2s}
 .zstat{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--acc);margin-top:4px;min-height:14px}
 .prevs{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
 .pvw{position:relative;width:56px;height:56px;flex-shrink:0}
 .pvw img{width:100%;height:100%;object-fit:cover;border:1px solid var(--bdr);display:block}
 .pvr{position:absolute;top:-5px;right:-5px;width:18px;height:18px;background:var(--err);color:#fff;border:none;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;padding:0;line-height:1}
-.upbanner{background:var(--sur2);border:1px solid var(--bdr);border-left:3px solid var(--acc);padding:12px 16px;margin-bottom:16px;display:none}
+.upbanner{background:var(--sur2);border:1px solid var(--bdr);border-left:3px solid var(--acc);padding:14px 16px;margin-bottom:16px;display:none}
 .upbanner.show{display:block}
-.uptxt{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--acc);margin-bottom:6px}
-.upbar-wrap{height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}
-.upbar{height:100%;background:var(--acc);width:0;transition:width .2s}
+.uptxt{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--acc);margin-bottom:8px}
+.upbar-wrap{height:6px;background:var(--bdr);border-radius:3px;overflow:hidden}
+.upbar{height:100%;background:var(--acc);width:0;transition:width .3s}
 .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
 .mo.open{display:flex}
 .modal{background:var(--sur);border:1px solid var(--bdr);border-top:3px solid var(--acc);width:100%;max-width:780px;margin:auto}
@@ -153,21 +155,30 @@ textarea.fctl{resize:vertical;min-height:75px}
 <div id="ls">
   <div class="lc">
     <div class="logo">GALLEY</div>
-    <div class="sub">Report System &middot; Fleet Operations</div>
-    <label class="lbl">Enter 4-Digit PIN</label>
-    <div class="pins">
-      <input class="pin" type="password" maxlength="1" inputmode="numeric" id="p1" autocomplete="off">
-      <input class="pin" type="password" maxlength="1" inputmode="numeric" id="p2" autocomplete="off">
-      <input class="pin" type="password" maxlength="1" inputmode="numeric" id="p3" autocomplete="off">
-      <input class="pin" type="password" maxlength="1" inputmode="numeric" id="p4" autocomplete="off">
+    <div class="sub">Fleet Operations Report</div>
+    <div style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:14px">Enter PIN</div>
+    <div class="pin-display">
+      <div class="pin-dot" id="dot0"></div>
+      <div class="pin-dot" id="dot1"></div>
+      <div class="pin-dot" id="dot2"></div>
+      <div class="pin-dot" id="dot3"></div>
     </div>
-    <button class="btn btn-p" onclick="doLogin()">ENTER</button>
     <div class="lerr" id="lerr">&#9888; Invalid PIN. Try again.</div>
-    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--bdr);text-align:center">
-      <div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Bookmark this page</div>
-      <div style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--acc)">rasional150-2ux.github.io/galley-report</div>
-      <button onclick="shareApp()" style="margin-top:12px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--acc);font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;cursor:pointer;width:100%;touch-action:manipulation">&#128279; SHARE LINK</button>
+    <div class="numpad">
+      <button class="npbtn" onclick="pinPress('1')">1</button>
+      <button class="npbtn" onclick="pinPress('2')">2</button>
+      <button class="npbtn" onclick="pinPress('3')">3</button>
+      <button class="npbtn" onclick="pinPress('4')">4</button>
+      <button class="npbtn" onclick="pinPress('5')">5</button>
+      <button class="npbtn" onclick="pinPress('6')">6</button>
+      <button class="npbtn" onclick="pinPress('7')">7</button>
+      <button class="npbtn" onclick="pinPress('8')">8</button>
+      <button class="npbtn" onclick="pinPress('9')">9</button>
+      <button class="npbtn del" onclick="pinDel()">&#9003;</button>
+      <button class="npbtn" onclick="pinPress('0')">0</button>
+      <button class="npbtn enter" onclick="pinEnter()">OK</button>
     </div>
+    <button onclick="shareApp()" style="background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--acc);font-family:IBM Plex Mono,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;cursor:pointer;width:100%;touch-action:manipulation">&#128279; SHARE LINK</button>
   </div>
 </div>
 
@@ -175,8 +186,7 @@ textarea.fctl{resize:vertical;min-height:75px}
   <div class="topbar">
     <div class="brand">GALLEY REPORT</div>
     <div class="uinfo">
-      <span id="uname"></span>
-      <span class="rtag" id="rtag"></span>
+      <span id="uname"></span><span class="rtag" id="rtag"></span>
       <button class="btn btn-s btn-sm" onclick="doLogout()">OUT</button>
     </div>
   </div>
@@ -189,11 +199,9 @@ textarea.fctl{resize:vertical;min-height:75px}
     </div>
 
     <div id="tab-reports">
-      <div class="sh">
-        <div class="stit">REPORTS</div>
-        <button class="btn btn-s btn-sm" onclick="loadReports()">&#8635; Refresh</button>
-      </div>
-      <div class="cnote">&#128197; Photos auto-removed after 7 days. Each cook sees only their own reports.</div>
+      <div class="sh"><div class="stit">REPORTS</div><button class="btn btn-s btn-sm" onclick="loadReports()">&#8635; Refresh</button></div>
+      <div id="debug-count" style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--acc);margin-bottom:8px"></div>
+      <div class="cnote">&#128247; Photos stored in Firebase Storage. Auto-deleted after 7 days.</div>
       <div class="stats">
         <div class="sc"><div class="sn" id="st-tot">&#8212;</div><div class="sl">Total</div></div>
         <div class="sc"><div class="sn" id="st-tod">&#8212;</div><div class="sl">Today</div></div>
@@ -204,70 +212,69 @@ textarea.fctl{resize:vertical;min-height:75px}
         <input class="finp" type="text" id="fsearch" placeholder="Search..." oninput="doFilter()" style="width:130px">
         <select class="fsel" id="fvessel" onchange="doFilter()"><option value="">All Vessels</option></select>
         <select class="fsel" id="fstatus" onchange="doFilter()">
-          <option value="">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="reviewed">Reviewed</option>
+          <option value="">All Status</option><option value="pending">Pending</option><option value="reviewed">Reviewed</option>
         </select>
         <input class="finp" type="date" id="fdate" onchange="doFilter()">
       </div>
-      <div class="tw">
-        <table class="rt">
-          <thead><tr><th>Date</th><th>Vessel</th><th>Cook</th><th>Meal</th><th>Score</th><th>Photos</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="tbody"><tr><td colspan="8"><div class="empty"><div class="spin"></div></div></td></tr></tbody>
-        </table>
-      </div>
+      <div class="tw"><table class="rt">
+        <thead><tr><th>Date</th><th>Vessel</th><th>Cook</th><th>Score</th><th>Photos</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="7"><div class="empty"><div class="spin"></div></div></td></tr></tbody>
+      </table></div>
     </div>
 
     <div id="tab-new" class="hidden">
       <div class="stit" style="margin-bottom:16px">NEW REPORT</div>
       <div class="dup" id="dupalert"></div>
-      <div class="upbanner" id="upbanner"><div class="uptxt" id="uptxt">Saving...</div><div class="upbar-wrap"><div class="upbar" id="upbar"></div></div></div>
+      <div class="upbanner" id="upbanner">
+        <div class="uptxt" id="uptxt">Uploading...</div>
+        <div class="upbar-wrap"><div class="upbar" id="upbar"></div></div>
+        <div style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--mut);margin-top:6px" id="upcount"></div>
+      </div>
       <div class="fsec"><div class="fst">Basic Info</div><div class="fsl"></div></div>
-      <div class="fg" style="margin-bottom:6px">
+      <div class="fg" style="margin-bottom:14px">
         <div class="fgrp"><label class="flbl">Date *</label><input class="fctl" type="date" id="f-date"></div>
         <div class="fgrp"><label class="flbl">Vessel *</label><select class="fctl" id="f-vessel"><option value="">Select...</option></select></div>
         <div class="fgrp"><label class="flbl">Cook Name *</label><input class="fctl" type="text" id="f-cook" placeholder="Your name"></div>
-        <div class="fgrp"><label class="flbl">Meal Type *</label>
-          <select class="fctl" id="f-meal"><option value="">Select...</option><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack / Tea Break</option></select>
-        </div>
         <div class="fgrp"><label class="flbl">Crew Served</label><input class="fctl" type="number" id="f-crew" inputmode="numeric" placeholder="0"></div>
-        <div class="fgrp"><label class="flbl">Remarks</label><input class="fctl" type="text" id="f-notes" placeholder="Any remarks"></div>
+        <div class="fgrp" style="grid-column:1/-1"><label class="flbl">Remarks</label><input class="fctl" type="text" id="f-notes" placeholder="Any remarks"></div>
       </div>
       <div class="fsec"><div class="fst">Daily Food Menu</div><div class="fsl"></div></div>
       <div class="foodg">
         <div class="fi"><label>&#127859; Breakfast Main</label><input type="text" id="fd-bkm" placeholder="e.g. Fried rice"></div>
-        <div class="fi"><label>&#129379; Breakfast Side</label><input type="text" id="fd-bks" placeholder="e.g. Toast, fruit"></div>
+        <div class="fi"><label>&#129379; Breakfast Side</label><input type="text" id="fd-bks" placeholder="e.g. Toast"></div>
         <div class="fi"><label>&#127858; Lunch Main</label><input type="text" id="fd-lnm" placeholder="e.g. Grilled chicken"></div>
-        <div class="fi"><label>&#129367; Lunch Side/Soup</label><input type="text" id="fd-lns" placeholder="e.g. Salad, soup"></div>
+        <div class="fi"><label>&#129367; Lunch Side/Soup</label><input type="text" id="fd-lns" placeholder="e.g. Salad"></div>
         <div class="fi"><label>&#127835; Dinner Main</label><input type="text" id="fd-dnm" placeholder="e.g. Fish curry"></div>
         <div class="fi"><label>&#129382; Dinner Side</label><input type="text" id="fd-dns" placeholder="e.g. Stir-fried veg"></div>
         <div class="fi"><label>&#127854; Dessert</label><input type="text" id="fd-des" placeholder="e.g. Pudding"></div>
         <div class="fi"><label>&#9749; Snack / Tea</label><input type="text" id="fd-snk" placeholder="e.g. Biscuits"></div>
-        <div class="fi"><label>&#129380; Beverages</label><input type="text" id="fd-bev" placeholder="e.g. Coffee, juice"></div>
-        <div class="fi"><label>&#128230; Special Diet</label><input type="text" id="fd-spc" placeholder="e.g. Halal, veg"></div>
+        <div class="fi"><label>&#129380; Beverages</label><input type="text" id="fd-bev" placeholder="e.g. Coffee"></div>
+        <div class="fi"><label>&#128230; Special Diet</label><input type="text" id="fd-spc" placeholder="e.g. Halal"></div>
       </div>
-      <div class="fsec"><div class="fst">Quality Scores (1-10)</div><div class="fsl"></div></div>
-      <div style="max-width:460px;margin-bottom:22px">
-        <div class="sr"><div>Food Quality</div><input class="si" type="number" id="s-food" min="1" max="10" inputmode="numeric" placeholder="-"></div>
-        <div class="sr"><div>Presentation</div><input class="si" type="number" id="s-pres" min="1" max="10" inputmode="numeric" placeholder="-"></div>
-        <div class="sr"><div>Hygiene &amp; Cleanliness</div><input class="si" type="number" id="s-hyg" min="1" max="10" inputmode="numeric" placeholder="-"></div>
-        <div class="sr"><div>Variety</div><input class="si" type="number" id="s-var" min="1" max="10" inputmode="numeric" placeholder="-"></div>
-        <div class="sr"><div>Portion Size</div><input class="si" type="number" id="s-por" min="1" max="10" inputmode="numeric" placeholder="-"></div>
+      <div id="scores-section" class="hidden">
+        <div class="fsec"><div class="fst">Quality Scores (1-10)</div><div class="fsl"></div></div>
+        <div style="max-width:460px;margin-bottom:22px">
+          <div class="sr"><div>Food Quality</div><input class="si" type="number" id="s-food" min="1" max="10" inputmode="numeric" placeholder="-"></div>
+          <div class="sr"><div>Presentation</div><input class="si" type="number" id="s-pres" min="1" max="10" inputmode="numeric" placeholder="-"></div>
+          <div class="sr"><div>Hygiene &amp; Cleanliness</div><input class="si" type="number" id="s-hyg" min="1" max="10" inputmode="numeric" placeholder="-"></div>
+          <div class="sr"><div>Variety</div><input class="si" type="number" id="s-var" min="1" max="10" inputmode="numeric" placeholder="-"></div>
+          <div class="sr"><div>Portion Size</div><input class="si" type="number" id="s-por" min="1" max="10" inputmode="numeric" placeholder="-"></div>
+        </div>
       </div>
       <div class="fsec"><div class="fst">Meal Photos</div><div class="fsl"></div></div>
-      <p style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--mut);margin-bottom:12px">Max 5 per meal. Compressed automatically.</p>
+      <p style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--mut);margin-bottom:12px">Max 5 per meal.</p>
       <div class="pzones">
-        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127859;</span><span class="pzt">Breakfast</span></div><span class="pzc" id="cnt-breakfast">0/5</span></div><div class="pzb"><div class="drop" id="drop-breakfast"><input type="file" accept="image/*" multiple id="fi-breakfast" onchange="addPhotos(event,'breakfast')"><div class="dico">&#128247;</div><div class="dtxt">Tap to select</div></div><div class="zprog" id="prg-breakfast"><div class="zprogb" id="prgb-breakfast"></div></div><div class="zstat" id="zst-breakfast"></div><div class="prevs" id="prv-breakfast"></div></div></div>
-        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127858;</span><span class="pzt">Lunch</span></div><span class="pzc" id="cnt-lunch">0/5</span></div><div class="pzb"><div class="drop" id="drop-lunch"><input type="file" accept="image/*" multiple id="fi-lunch" onchange="addPhotos(event,'lunch')"><div class="dico">&#128247;</div><div class="dtxt">Tap to select</div></div><div class="zprog" id="prg-lunch"><div class="zprogb" id="prgb-lunch"></div></div><div class="zstat" id="zst-lunch"></div><div class="prevs" id="prv-lunch"></div></div></div>
-        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127835;</span><span class="pzt">Dinner</span></div><span class="pzc" id="cnt-dinner">0/5</span></div><div class="pzb"><div class="drop" id="drop-dinner"><input type="file" accept="image/*" multiple id="fi-dinner" onchange="addPhotos(event,'dinner')"><div class="dico">&#128247;</div><div class="dtxt">Tap to select</div></div><div class="zprog" id="prg-dinner"><div class="zprogb" id="prgb-dinner"></div></div><div class="zstat" id="zst-dinner"></div><div class="prevs" id="prv-dinner"></div></div></div>
+        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127859;</span><span class="pzt">Breakfast</span></div><span class="pzc" id="cnt-breakfast">0/5</span></div><div class="pzb"><div class="drop"><input type="file" accept="image/*" multiple onchange="addPhotos(event,'breakfast')"><div class="dico">&#128247;</div><div class="dtxt">Tap to add</div></div><div class="zprog" id="prg-breakfast"><div class="zprogb" id="prgb-breakfast"></div></div><div class="zstat" id="zst-breakfast"></div><div class="prevs" id="prv-breakfast"></div></div></div>
+        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127858;</span><span class="pzt">Lunch</span></div><span class="pzc" id="cnt-lunch">0/5</span></div><div class="pzb"><div class="drop"><input type="file" accept="image/*" multiple onchange="addPhotos(event,'lunch')"><div class="dico">&#128247;</div><div class="dtxt">Tap to add</div></div><div class="zprog" id="prg-lunch"><div class="zprogb" id="prgb-lunch"></div></div><div class="zstat" id="zst-lunch"></div><div class="prevs" id="prv-lunch"></div></div></div>
+        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127835;</span><span class="pzt">Dinner</span></div><span class="pzc" id="cnt-dinner">0/5</span></div><div class="pzb"><div class="drop"><input type="file" accept="image/*" multiple onchange="addPhotos(event,'dinner')"><div class="dico">&#128247;</div><div class="dtxt">Tap to add</div></div><div class="zprog" id="prg-dinner"><div class="zprogb" id="prgb-dinner"></div></div><div class="zstat" id="zst-dinner"></div><div class="prevs" id="prv-dinner"></div></div></div>
       </div>
       <div class="fsec"><div class="fst">Storage Area Photos</div><div class="fsl"></div></div>
       <p style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--mut);margin-bottom:12px">Max 5 per area.</p>
       <div class="pzones">
-        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127859;</span><span class="pzt">Galley/Kitchen</span></div><span class="pzc" id="cnt-galley">0/5</span></div><div class="pzb"><div class="drop" id="drop-galley"><input type="file" accept="image/*" multiple id="fi-galley" onchange="addPhotos(event,'galley')"><div class="dico">&#128247;</div><div class="dtxt">Tap to select</div></div><div class="zprog" id="prg-galley"><div class="zprogb" id="prgb-galley"></div></div><div class="zstat" id="zst-galley"></div><div class="prevs" id="prv-galley"></div></div></div>
-        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#129398;</span><span class="pzt">Refrigerator</span></div><span class="pzc" id="cnt-fridge">0/5</span></div><div class="pzb"><div class="drop" id="drop-fridge"><input type="file" accept="image/*" multiple id="fi-fridge" onchange="addPhotos(event,'fridge')"><div class="dico">&#128247;</div><div class="dtxt">Tap to select</div></div><div class="zprog" id="prg-fridge"><div class="zprogb" id="prgb-fridge"></div></div><div class="zstat" id="zst-fridge"></div><div class="prevs" id="prv-fridge"></div></div></div>
-        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#10052;</span><span class="pzt">Freezer</span></div><span class="pzc" id="cnt-freezer">0/5</span></div><div class="pzb"><div class="drop" id="drop-freezer"><input type="file" accept="image/*" multiple id="fi-freezer" onchange="addPhotos(event,'freezer')"><div class="dico">&#128247;</div><div class="dtxt">Tap to select</div></div><div class="zprog" id="prg-freezer"><div class="zprogb" id="prgb-freezer"></div></div><div class="zstat" id="zst-freezer"></div><div class="prevs" id="prv-freezer"></div></div></div>
-        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#128230;</span><span class="pzt">Dry Storage</span></div><span class="pzc" id="cnt-dry">0/5</span></div><div class="pzb"><div class="drop" id="drop-dry"><input type="file" accept="image/*" multiple id="fi-dry" onchange="addPhotos(event,'dry')"><div class="dico">&#128247;</div><div class="dtxt">Tap to select</div></div><div class="zprog" id="prg-dry"><div class="zprogb" id="prgb-dry"></div></div><div class="zstat" id="zst-dry"></div><div class="prevs" id="prv-dry"></div></div></div>
+        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#127859;</span><span class="pzt">Galley/Kitchen</span></div><span class="pzc" id="cnt-galley">0/5</span></div><div class="pzb"><div class="drop"><input type="file" accept="image/*" multiple onchange="addPhotos(event,'galley')"><div class="dico">&#128247;</div><div class="dtxt">Tap to add</div></div><div class="zprog" id="prg-galley"><div class="zprogb" id="prgb-galley"></div></div><div class="zstat" id="zst-galley"></div><div class="prevs" id="prv-galley"></div></div></div>
+        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#129398;</span><span class="pzt">Refrigerator</span></div><span class="pzc" id="cnt-fridge">0/5</span></div><div class="pzb"><div class="drop"><input type="file" accept="image/*" multiple onchange="addPhotos(event,'fridge')"><div class="dico">&#128247;</div><div class="dtxt">Tap to add</div></div><div class="zprog" id="prg-fridge"><div class="zprogb" id="prgb-fridge"></div></div><div class="zstat" id="zst-fridge"></div><div class="prevs" id="prv-fridge"></div></div></div>
+        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#10052;</span><span class="pzt">Freezer</span></div><span class="pzc" id="cnt-freezer">0/5</span></div><div class="pzb"><div class="drop"><input type="file" accept="image/*" multiple onchange="addPhotos(event,'freezer')"><div class="dico">&#128247;</div><div class="dtxt">Tap to add</div></div><div class="zprog" id="prg-freezer"><div class="zprogb" id="prgb-freezer"></div></div><div class="zstat" id="zst-freezer"></div><div class="prevs" id="prv-freezer"></div></div></div>
+        <div class="pzone"><div class="pzh"><div class="pzhtw"><span class="pzi">&#128230;</span><span class="pzt">Dry Storage</span></div><span class="pzc" id="cnt-dry">0/5</span></div><div class="pzb"><div class="drop"><input type="file" accept="image/*" multiple onchange="addPhotos(event,'dry')"><div class="dico">&#128247;</div><div class="dtxt">Tap to add</div></div><div class="zprog" id="prg-dry"><div class="zprogb" id="prgb-dry"></div></div><div class="zstat" id="zst-dry"></div><div class="prevs" id="prv-dry"></div></div></div>
       </div>
       <button class="btn btn-p" id="subbtn" onclick="submitReport()" style="max-width:300px">SUBMIT REPORT</button>
     </div>
@@ -284,17 +291,13 @@ textarea.fctl{resize:vertical;min-height:75px}
           <div class="fgrp" style="justify-content:flex-end"><button class="btn btn-ok btn-sm" onclick="addPin()" style="width:auto">ADD PIN</button></div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title">Active PINs</div>
-        <div class="tw"><table class="pin-table"><thead><tr><th>Name</th><th>Vessel</th><th>PIN</th><th>Role</th><th>Added</th><th></th></tr></thead><tbody id="pin-tbody"><tr><td colspan="6" style="text-align:center;color:var(--mut);padding:20px">Loading...</td></tr></tbody></table></div>
+      <div class="card"><div class="card-title">Active PINs</div>
+        <div class="tw"><table class="pin-table"><thead><tr><th>Name</th><th>Vessel</th><th>PIN</th><th>Role</th><th>Added</th><th></th></tr></thead><tbody id="pin-tbody"></tbody></table></div>
       </div>
     </div>
 
     <div id="tab-admin" class="hidden">
-      <div class="sh">
-        <div class="stit">ADMIN</div>
-        <button class="btn btn-d btn-sm" onclick="runCleanup(true)">&#128465; Clear Old Photos</button>
-      </div>
+      <div class="sh"><div class="stit">ADMIN</div><button class="btn btn-d btn-sm" onclick="runCleanup(true)">&#128465; Clear Old Photos</button></div>
       <div class="card"><div class="card-title">Vessel Summary</div><div id="admincnt" style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--mut)">Loading...</div></div>
     </div>
   </div>
@@ -306,84 +309,108 @@ textarea.fctl{resize:vertical;min-height:75px}
     <div class="mb" id="detbody"></div>
   </div>
 </div>
-
 <div id="lb"><button id="lbc" onclick="closeLB()">&#215;</button><img id="lbimg" src="" alt=""></div>
 <div id="lo"><div class="spin"></div><div class="ltxt" id="ltxt">PROCESSING...</div></div>
 <div class="tc" id="tc"></div>
 
+<!-- IMPORTANT: Plain script for PIN pad so onclick works -->
+<script>
+var _pin = "";
+function _dots() {
+  for (var i = 0; i < 4; i++) {
+    var d = document.getElementById("dot" + i);
+    if (i < _pin.length) d.classList.add("filled");
+    else d.classList.remove("filled");
+  }
+}
+function pinPress(n) {
+  if (_pin.length < 4) { _pin += n; _dots(); }
+  if (_pin.length === 4) { if (window.doLogin) window.doLogin(); }
+}
+function pinDel() { _pin = _pin.slice(0, -1); _dots(); }
+function pinEnter() { if (_pin.length === 4 && window.doLogin) window.doLogin(); }
+function shareApp() {
+  var url = "https://rasional1502-ux.github.io/galley-report/";
+  if (navigator.share) { navigator.share({title:"Galley Report", url:url}); }
+  else if (navigator.clipboard) { navigator.clipboard.writeText(url).then(function(){ alert("Link copied!"); }); }
+  else { alert(url); }
+}
+function doLogout() { if (window._doLogout) window._doLogout(); }
+function goTab(t,b) { if (window._goTab) window._goTab(t,b); }
+function loadReports() { if (window._loadReports) window._loadReports(); }
+function doFilter() { if (window._doFilter) window._doFilter(); }
+function openDetail(id) { if (window._openDetail) window._openDetail(id); }
+function deleteReport(id) { if (window._deleteReport) window._deleteReport(id); }
+function saveComment(id) { if (window._saveComment) window._saveComment(id); }
+function addPin() { if (window._addPin) window._addPin(); }
+function deletePin(p) { if (window._deletePin) window._deletePin(p); }
+function submitReport() { if (window._submitReport) window._submitReport(); }
+function runCleanup(m) { if (window._runCleanup) window._runCleanup(m); }
+function addPhotos(e,z) { if (window._addPhotos) window._addPhotos(e,z); }
+function rmPhoto(z,i) { if (window._rmPhoto) window._rmPhoto(z,i); }
+function openLB(u) { if (window._openLB) window._openLB(u); }
+function closeLB() { if (window._closeLB) window._closeLB(); }
+function closeModal(id) { if (window._closeModal) window._closeModal(id); }
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, set, get, update, remove }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, set, get, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getStorage, ref as sref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-const app = initializeApp({
-  apiKey:      "AIzaSyC4IxeTRsrv4uChlkGDXgSCI-xJAI-GHOc",
-  databaseURL: "https://galley-report-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:   "galley-report",
+const FB = initializeApp({
+  apiKey:        "AIzaSyC4IxeTRsrv4uChlkGDXgSCI-xJAI-GHOc",
+  authDomain:    "galley-report.firebaseapp.com",
+  databaseURL:   "https://galley-report-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:     "galley-report",
+  storageBucket: "galley-report.firebasestorage.app",
 });
-const db = getDatabase(app);
+const db = getDatabase(FB);
+const st = getStorage(FB);
 
-const VESSELS = ["AETH","ANY","APT","ASMRS","AST","BLRS","BLU","BRNT","CVRI","DPHN",
-  "ETHR","GNYN","HRE","LRCA","MNSLU","MRA","MSHLL","NMT","ONRI","ORNCC",
-  "SLV","SMS","TCH1","TGR","THLT","TPYH","TSS","VRNT","VRS"].sort();
-
+const VESSELS = ["AETH","ANY","APT","ASMRS","AST","BLRS","BLU","BRNT","CVRI","DPHN","ETHR","GNYN","HRE","LRCA","MNSLU","MRA","MSHLL","NMT","ONRI","ORNCC","SLV","SMS","TCH1","TGR","THLT","TPYH","TSS","VRNT","VRS"].sort();
 const ZONES = {
-  breakfast:{ label:"Breakfast",     icon:"Breakfast", max:5 },
-  lunch:    { label:"Lunch",         icon:"Lunch",     max:5 },
-  dinner:   { label:"Dinner",        icon:"Dinner",    max:5 },
-  galley:   { label:"Galley/Kitchen",icon:"Galley",    max:5 },
-  fridge:   { label:"Refrigerator",  icon:"Fridge",    max:5 },
-  freezer:  { label:"Freezer",       icon:"Freezer",   max:5 },
-  dry:      { label:"Dry Storage",   icon:"Dry",       max:5 },
+  breakfast:{label:"Breakfast",max:5}, lunch:{label:"Lunch",max:5}, dinner:{label:"Dinner",max:5},
+  galley:{label:"Galley/Kitchen",max:5}, fridge:{label:"Refrigerator",max:5},
+  freezer:{label:"Freezer",max:5}, dry:{label:"Dry Storage",max:5}
 };
 const ZK = Object.keys(ZONES);
-const MEAL_Z    = ["breakfast","lunch","dinner"];
+const MEAL_Z = ["breakfast","lunch","dinner"];
 const STORAGE_Z = ["galley","fridge","freezer","dry"];
-const CW = 800, CQ = 0.60, CLEANUP_DAYS = 7;
-
+const CW = 1024, CQ = 0.72, CLEANUP_DAYS = 7;
 let CU = null, AR = [], PINS_CACHE = {};
 const PD = {}; ZK.forEach(z => PD[z] = []);
 
-/* UTILS */
-window.toast = (msg, type="info", ms=4000) => {
+function toast(msg, type="info", ms=4500) {
   const el = document.createElement("div");
   el.className = "toast " + type; el.textContent = msg;
   document.getElementById("tc").appendChild(el);
   setTimeout(() => el.remove(), ms);
-};
-window.loading = (show, txt="SAVING...") => {
+}
+function loading(show, txt="PROCESSING...") {
   document.getElementById("ltxt").textContent = txt;
   document.getElementById("lo").classList.toggle("show", show);
-};
-window.closeModal = id => document.getElementById(id).classList.remove("open");
-window.closeLB = () => { document.getElementById("lb").classList.remove("open"); setTimeout(() => { document.getElementById("lbimg").src = ""; }, 150); };
-const SC  = s => !s?"": s>=8?"sg": s>=5?"sm":"sb";
-const AVG = r => { const v=[r.sc?.food,r.sc?.pres,r.sc?.hyg,r.sc?.var,r.sc?.por].filter(x=>x!=null); return v.length?(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1):null; };
-const UID = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const Y   = () => new Promise(r=>setTimeout(r,0));
+}
+window._closeModal = id => document.getElementById(id).classList.remove("open");
+window._closeLB = () => { document.getElementById("lb").classList.remove("open"); setTimeout(() => { document.getElementById("lbimg").src = ""; }, 150); };
+window._openLB = url => { document.getElementById("lbimg").src = url; document.getElementById("lb").classList.add("open"); };
+const SC = s => !s ? "" : s >= 8 ? "sg" : s >= 5 ? "sm" : "sb";
+const AVG = r => { const v = [r.sc?.food,r.sc?.pres,r.sc?.hyg,r.sc?.var,r.sc?.por].filter(x => x != null); return v.length ? (v.reduce((a,b) => a+b, 0)/v.length).toFixed(1) : null; };
+const Y = () => new Promise(r => setTimeout(r, 0));
 
-window.shareApp = async () => {
-  const url = "https://rasional150-2ux.github.io/galley-report/";
-  if (navigator.share) { try { await navigator.share({title:"Galley Report",url}); } catch(e){} }
-  else { try { await navigator.clipboard.writeText(url); toast("Link copied!","success"); } catch(e){ toast(url,"info",7000); } }
-};
-
-/* COMPRESS */
-function compressToB64(file) {
-  return new Promise((res,rej) => {
-    const reader = new FileReader();
-    reader.onerror = rej;
+function compressToBlob(file) {
+  return new Promise((res, rej) => {
+    const reader = new FileReader(); reader.onerror = rej;
     reader.onload = ev => {
-      const img = new Image();
-      img.onerror = rej;
+      const img = new Image(); img.onerror = rej;
       img.onload = () => {
         try {
-          let w=img.naturalWidth||100, h=img.naturalHeight||100;
-          if(w>CW){h=Math.round(h*CW/w);w=CW;}
-          const c=document.createElement("canvas"); c.width=w; c.height=h;
-          c.getContext("2d").drawImage(img,0,0,w,h);
-          res(c.toDataURL("image/jpeg",CQ));
-        } catch(e){rej(e);}
+          let w = img.naturalWidth||100, h = img.naturalHeight||100;
+          if (w > CW) { h = Math.round(h*CW/w); w = CW; }
+          const c = document.createElement("canvas"); c.width = w; c.height = h;
+          c.getContext("2d").drawImage(img, 0, 0, w, h);
+          c.toBlob(b => b ? res(b) : rej(new Error("toBlob failed")), "image/jpeg", CQ);
+        } catch(e) { rej(e); }
       };
       img.src = ev.target.result;
     };
@@ -391,532 +418,462 @@ function compressToB64(file) {
   });
 }
 
-/* HASH original file bytes */
-function fileHash(file) {
-  return new Promise(res => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const bytes = new Uint8Array(e.target.result);
-      let h = 5381;
-      for(let i=0;i<bytes.length;i++) h=(Math.imul(h,33)^bytes[i])>>>0;
-      res(h.toString(16)+"_"+file.size);
-    };
-    reader.onerror = () => res(file.name+"_"+file.size+"_"+file.lastModified);
-    reader.readAsArrayBuffer(file.slice(0,65536));
-  });
-}
-
 function fillVessels() {
   ["f-vessel","fvessel","new-vessel"].forEach(id => {
-    const el = document.getElementById(id); if(!el) return;
-    while(el.options.length>1) el.remove(1);
-    VESSELS.forEach(v => { const o=document.createElement("option"); o.value=v; o.textContent=v; el.appendChild(o); });
+    const el = document.getElementById(id); if (!el) return;
+    while (el.options.length > 1) el.remove(1);
+    VESSELS.forEach(v => { const o = document.createElement("option"); o.value = v; o.textContent = v; el.appendChild(o); });
   });
 }
 
 async function loadPins() {
-  const snap = await get(ref(db,"pins"));
-  PINS_CACHE = {};
-  if(snap.exists()) { snap.forEach(c => { PINS_CACHE[c.key] = c.val(); }); }
+  const snap = await get(ref(db, "pins")); PINS_CACHE = {};
+  if (snap.exists()) { snap.forEach(c => { PINS_CACHE[c.key] = c.val(); }); }
   else {
-    await set(ref(db,"pins/1234"),{name:"Manager",role:"manager",vessel:"",addedAt:Date.now()});
-    PINS_CACHE["1234"]={name:"Manager",role:"manager",vessel:"",addedAt:Date.now()};
-    toast("Default manager PIN 1234 created. Change in Manage PINs.","warn",7000);
+    await set(ref(db, "pins/1234"), {name:"Manager", role:"manager", vessel:"", addedAt:Date.now()});
+    PINS_CACHE["1234"] = {name:"Manager", role:"manager", vessel:"", addedAt:Date.now()};
+    toast("Default manager PIN 1234 created.", "warn", 7000);
   }
 }
 
 window.doLogin = async () => {
-  const pin=["p1","p2","p3","p4"].map(id=>document.getElementById(id).value).join("");
-  if(pin.length<4) return;
-  loading(true,"VERIFYING...");
+  const pin = window._pin;
+  if (!pin || pin.length < 4) return;
+  loading(true, "VERIFYING...");
   try { await loadPins(); } catch(e) {
     loading(false);
-    document.getElementById("lerr").textContent="Cannot reach server. Check internet.";
-    document.getElementById("lerr").style.display="block";
-    ["p1","p2","p3","p4"].forEach(id=>document.getElementById(id).value="");
-    document.getElementById("p1").focus(); return;
+    document.getElementById("lerr").textContent = "Cannot reach server. Check internet.";
+    document.getElementById("lerr").style.display = "block";
+    window._pin = ""; _dots(); return;
   }
-  const u=PINS_CACHE[pin]; loading(false);
-  if(!u) {
-    document.getElementById("lerr").style.display="block";
-    ["p1","p2","p3","p4"].forEach(id=>document.getElementById(id).value="");
-    document.getElementById("p1").focus(); return;
+  const u = PINS_CACHE[pin]; loading(false);
+  if (!u) { document.getElementById("lerr").style.display = "block"; window._pin = ""; _dots(); return; }
+  document.getElementById("lerr").style.display = "none";
+  CU = { name:u.name, role:u.role, vessel:u.vessel||"", pin:pin };
+  document.getElementById("ls").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("uname").textContent = u.name;
+  const rt = document.getElementById("rtag");
+  rt.textContent = u.role.toUpperCase();
+  rt.className = "rtag " + (u.role === "manager" ? "rm" : "rc");
+  if (u.role === "manager") {
+    document.querySelectorAll(".manager-only").forEach(e => e.classList.remove("hidden"));
+    document.getElementById("scores-section").classList.remove("hidden");
   }
-  document.getElementById("lerr").style.display="none";
-  CU={...u,pin};
-  document.getElementById("ls").style.display="none";
-  document.getElementById("app").style.display="block";
-  document.getElementById("uname").textContent=u.name;
-  const rt=document.getElementById("rtag");
-  rt.textContent=u.role.toUpperCase(); rt.className="rtag "+(u.role==="manager"?"rm":"rc");
-  if(u.role==="manager") document.querySelectorAll(".manager-only").forEach(e=>e.classList.remove("hidden"));
-  document.getElementById("f-date").valueAsDate=new Date();
-  if(u.role==="cook"){
-    document.getElementById("f-cook").value=u.name;
-    if(u.vessel) setTimeout(()=>{document.getElementById("f-vessel").value=u.vessel;},100);
+  document.getElementById("f-date").valueAsDate = new Date();
+  if (u.role === "cook") {
+    document.getElementById("f-cook").value = u.name;
+    if (u.vessel) setTimeout(() => { document.getElementById("f-vessel").value = u.vessel; }, 100);
   }
   fillVessels();
-  loadReports();
-  setTimeout(()=>runCleanup(false),5000);
+  window._loadReports();
+  setTimeout(() => window._runCleanup(false), 6000);
 };
 
-window.doLogout = () => {
-  CU=null; AR=[]; PINS_CACHE={};
-  ZK.forEach(z=>{PD[z].forEach(p=>URL.revokeObjectURL(p.localUrl));PD[z]=[];drawPreviews(z);});
-  document.getElementById("app").style.display="none";
-  document.getElementById("ls").style.display="flex";
-  document.querySelectorAll(".manager-only").forEach(e=>e.classList.add("hidden"));
-  ["p1","p2","p3","p4"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("lerr").style.display="none";
-  document.getElementById("p1").focus();
-  goTab("reports",document.querySelector(".tab"));
+window._doLogout = () => {
+  CU = null; AR = []; PINS_CACHE = {};
+  window._pin = ""; _dots();
+  ZK.forEach(z => { PD[z].forEach(p => URL.revokeObjectURL(p.localUrl)); PD[z] = []; drawPreviews(z); });
+  document.getElementById("app").style.display = "none";
+  document.getElementById("ls").style.display = "flex";
+  document.querySelectorAll(".manager-only").forEach(e => e.classList.add("hidden"));
+  document.getElementById("scores-section").classList.add("hidden");
+  document.getElementById("lerr").style.display = "none";
+  window._goTab("reports", document.querySelector(".tab"));
 };
 
-["p1","p2","p3","p4"].forEach((id,i,a)=>{
-  const el=document.getElementById(id);
-  el.addEventListener("input",()=>{
-    if(el.value.length===1&&i<a.length-1) document.getElementById(a[i+1]).focus();
-    if(i===a.length-1&&el.value.length===1) doLogin();
+window._goTab = (tab, btn) => {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  ["reports","new","pins","admin"].forEach(t => {
+    const el = document.getElementById("tab-" + t);
+    if (el) el.classList.toggle("hidden", t !== tab);
   });
-  el.addEventListener("keydown",e=>{if(e.key==="Backspace"&&el.value===""&&i>0) document.getElementById(a[i-1]).focus();});
-});
-
-window.goTab = (tab,btn) => {
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  if(btn) btn.classList.add("active");
-  ["reports","new","pins","admin"].forEach(t=>document.getElementById("tab-"+t)?.classList.toggle("hidden",t!==tab));
-  if(tab==="admin") loadAdmin();
-  if(tab==="pins")  drawPinTable();
+  if (tab === "admin") loadAdmin();
+  if (tab === "pins") drawPinTable();
 };
 
-window.addPin = async () => {
-  const name=document.getElementById("new-name").value.trim();
-  const pin=document.getElementById("new-pin").value.trim();
-  const role=document.getElementById("new-role").value;
-  const vessel=document.getElementById("new-vessel").value;
-  if(!name||!pin){toast("Enter name and PIN","error");return;}
-  if(pin.length!==4||!/^\d{4}$/.test(pin)){toast("PIN must be 4 digits","error");return;}
-  if(PINS_CACHE[pin]){toast("PIN "+pin+" already exists","error");return;}
+window._loadReports = async () => {
+  const tb = document.getElementById("tbody");
+  tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="spin"></div></div></td></tr>';
   try {
-    await set(ref(db,"pins/"+pin),{name,role,vessel,addedAt:Date.now()});
-    PINS_CACHE[pin]={name,role,vessel,addedAt:Date.now()};
-    document.getElementById("new-name").value=""; document.getElementById("new-pin").value="";
-    document.getElementById("new-vessel").value=""; document.getElementById("new-role").value="cook";
-    drawPinTable(); toast("PIN "+pin+" added for "+name,"success");
-  } catch(e){toast("Failed: "+e.message,"error");}
-};
-
-window.deletePin = async pin => {
-  if(pin===CU.pin){toast("Cannot delete your own PIN","error");return;}
-  if(!confirm("Delete PIN "+pin+" ("+PINS_CACHE[pin]?.name+")?")) return;
-  try {
-    await remove(ref(db,"pins/"+pin)); delete PINS_CACHE[pin];
-    drawPinTable(); toast("PIN deleted","success");
-  } catch(e){toast("Failed: "+e.message,"error");}
-};
-
-function drawPinTable() {
-  const tb=document.getElementById("pin-tbody");
-  const entries=Object.entries(PINS_CACHE).sort((a,b)=>a[1].name.localeCompare(b[1].name));
-  if(!entries.length){tb.innerHTML="<tr><td colspan=\"6\" style=\"text-align:center;color:var(--mut);padding:20px\">No PINs yet</td></tr>";return;}
-  tb.innerHTML=entries.map(([pin,u])=>`<tr>
-    <td>${u.name}</td><td>${u.vessel||"&#8212;"}</td>
-    <td class="pin-show">${pin}</td>
-    <td class="${u.role==="manager"?"pin-role-m":"pin-role-c"}">${u.role}</td>
-    <td style="color:var(--mut)">${u.addedAt?new Date(u.addedAt).toLocaleDateString():""}</td>
-    <td>${pin!==CU.pin?`<button class="btn btn-d btn-sm" onclick="deletePin('${pin}')">DEL</button>`:"<span style=\"color:var(--mut);font-size:10px\">YOU</span>"}</td>
-  </tr>`).join("");
-}
-
-/* LOAD REPORTS
-   KEY FIX: reports are stored WITHOUT photos in /reports node.
-   Photos stored separately in /photos/{reportId}.
-   This means loadReports is fast even with 100s of reports.
-   Manager sees ALL. Cook sees only their own (filtered by cookPin). */
-window.loadReports = async () => {
-  const tb=document.getElementById("tbody");
-  tb.innerHTML="<tr><td colspan=\"8\"><div class=\"empty\"><div class=\"spin\"></div></div></td></tr>";
-  try {
-    const snap=await get(ref(db,"reports"));
-    AR=[];
-    if(snap.exists()) snap.forEach(c=>AR.push({id:c.key,...c.val()}));
-    AR.sort((a,b)=>b.createdAt-a.createdAt);
-    doStats(); doFilter();
+    const snap = await get(ref(db, "reports"));
+    AR = [];
+    if (snap.exists()) {
+      const raw = snap.val();
+      AR = Object.entries(raw).map(([id, val]) => ({id, ...val}));
+    }
+    AR.sort((a,b) => b.createdAt - a.createdAt);
+    // Reset all filters
+    document.getElementById("fsearch").value = "";
+    document.getElementById("fvessel").value = "";
+    document.getElementById("fstatus").value = "";
+    document.getElementById("fdate").value = "";
+    // Fill vessel dropdown
+    const fv = document.getElementById("fvessel");
+    while (fv.options.length > 1) fv.remove(1);
+    [...new Set(AR.map(r => r.vessel).filter(Boolean))].sort().forEach(v => {
+      const o = document.createElement("option"); o.value = v; o.textContent = v; fv.appendChild(o);
+    });
+    doStats();
+    document.getElementById("debug-count").textContent = "Loaded: " + AR.length + " reports";
+    if (CU.role === "manager") {
+      drawTable(AR);
+    } else {
+      drawTable(AR.filter(r => r.cookPin === CU.pin));
+    }
   } catch(e) {
-    toast("Load failed: "+e.message,"error");
-    tb.innerHTML="<tr><td colspan=\"8\"><div class=\"empty\"><div class=\"ei\">&#9888;</div><div class=\"et\">Error loading. Check internet.</div></div></td></tr>";
+    toast("Load failed: " + e.message, "error");
+    tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="ei">&#9888;</div><div class="et">Error loading. Check internet.</div></div></td></tr>';
   }
 };
 
 function doStats() {
-  const today=new Date().toISOString().slice(0,10);
-  /* Manager sees all stats. Cook sees only their own. */
-  const v=CU.role==="manager"?AR:AR.filter(r=>r.cookPin===CU.pin);
-  document.getElementById("st-tot").textContent=v.length;
-  document.getElementById("st-tod").textContent=v.filter(r=>r.date===today).length;
-  document.getElementById("st-pen").textContent=v.filter(r=>!r.reviewed).length;
-  document.getElementById("st-ves").textContent=new Set(v.map(r=>r.vessel)).size;
+  const today = new Date().toISOString().slice(0, 10);
+  const v = CU.role === "manager" ? AR : AR.filter(r => r.cookPin === CU.pin);
+  document.getElementById("st-tot").textContent = v.length;
+  document.getElementById("st-tod").textContent = v.filter(r => r.date === today).length;
+  document.getElementById("st-pen").textContent = v.filter(r => !r.reviewed).length;
+  document.getElementById("st-ves").textContent = new Set(v.map(r => r.vessel)).size;
 }
 
-window.doFilter = () => {
-  const s=document.getElementById("fsearch").value.toLowerCase();
-  const v=document.getElementById("fvessel").value;
-  const st=document.getElementById("fstatus").value;
-  const d=document.getElementById("fdate").value;
-  let L=AR;
-  /* PRIVACY: non-manager only sees their own reports */
-  if(CU.role!=="manager") L=L.filter(r=>r.cookPin===CU.pin);
-  if(v)  L=L.filter(r=>r.vessel===v);
-  if(d)  L=L.filter(r=>r.date===d);
-  if(st==="pending")  L=L.filter(r=>!r.reviewed);
-  if(st==="reviewed") L=L.filter(r=>r.reviewed);
-  if(s) L=L.filter(r=>(r.date+r.vessel+r.cook+r.meal+(r.notes||"")).toLowerCase().includes(s));
+window._doFilter = () => {
+  const s  = document.getElementById("fsearch").value.toLowerCase();
+  const v  = document.getElementById("fvessel").value;
+  const st = document.getElementById("fstatus").value;
+  const d  = document.getElementById("fdate").value;
+  let L = CU.role === "manager" ? AR : AR.filter(r => r.cookPin === CU.pin);
+  if (v)  L = L.filter(r => r.vessel === v);
+  if (d)  L = L.filter(r => r.date === d);
+  if (st === "pending")  L = L.filter(r => !r.reviewed);
+  if (st === "reviewed") L = L.filter(r => r.reviewed);
+  if (s)  L = L.filter(r => (r.date+r.vessel+r.cook+(r.notes||"")).toLowerCase().includes(s));
   drawTable(L);
 };
 
 function drawTable(L) {
-  const tb=document.getElementById("tbody");
-  if(!L.length){tb.innerHTML="<tr><td colspan=\"8\"><div class=\"empty\"><div class=\"ei\">&#128203;</div><div class=\"et\">No reports</div></div></td></tr>";return;}
-  tb.innerHTML=L.map(r=>{
-    const avg=AVG(r);
-    const sc=avg?"<span class=\"sbadge "+SC(parseFloat(avg))+"\">"+avg+"</span>":"&#8212;";
-    const totalP=ZK.reduce((s,z)=>s+(r.photos?.[z]?.length||0),0);
-    const photoCell=totalP>0?"<span style=\"font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--acc)\">"+totalP+" &#128247;</span>":"&#8212;";
-    const sp=r.reviewed?"<span class=\"spill s-done\">Done</span>":"<span class=\"spill s-pend\">Pending</span>";
-    const mgr=CU.role==="manager"
-      ?"<button class=\"btn btn-m btn-sm\" style=\"margin-left:4px\" onclick=\"openDetail('"+r.id+"')\">COMMENT</button>"
-       +"<button class=\"btn btn-d btn-sm\" style=\"margin-left:4px\" onclick=\"deleteReport('"+r.id+"')\">&#128465;</button>"
-      :"";
-    return "<tr>"
-      +"<td style=\"font-family:IBM Plex Mono,monospace;font-size:11px;white-space:nowrap\">"+(r.date||"")+"</td>"
-      +"<td><span class=\"vtag\">"+(r.vessel||"")+"</span></td>"
-      +"<td style=\"font-size:12px\">"+(r.cook||"")+"</td>"
-      +"<td style=\"font-size:11px;color:var(--mut)\">"+(r.meal||"")+"</td>"
-      +"<td>"+sc+"</td>"
-      +"<td>"+photoCell+"</td>"
-      +"<td>"+sp+"</td>"
-      +"<td><button class=\"btn btn-s btn-sm\" onclick=\"openDetail('"+r.id+"')\">VIEW</button>"+mgr+"</td>"
-      +"</tr>";
+  const tb = document.getElementById("tbody");
+  if (!L.length) {
+    tb.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="ei">&#128203;</div><div class="et">No reports found</div></div></td></tr>';
+    return;
+  }
+  tb.innerHTML = L.map(r => {
+    const avg = AVG(r);
+    const sc = avg ? `<span class="sbadge ${SC(parseFloat(avg))}">${avg}</span>` : "&#8212;";
+    const totalP = ZK.reduce((s,z) => s + (r.photos?.[z]?.length||0), 0);
+    const photoCell = totalP > 0 ? `<span style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--acc)">${totalP} &#128247;</span>` : "&#8212;";
+    const sp = r.reviewed ? '<span class="spill s-done">Done</span>' : '<span class="spill s-pend">Pending</span>';
+    const mgr = CU.role === "manager"
+      ? `<button class="btn btn-m btn-sm" style="margin-left:4px" onclick="openDetail('${r.id}')">COMMENT</button><button class="btn btn-d btn-sm" style="margin-left:4px" onclick="deleteReport('${r.id}')">&#128465;</button>`
+      : "";
+    return `<tr>
+      <td style="font-family:IBM Plex Mono,monospace;font-size:11px;white-space:nowrap">${r.date||""}</td>
+      <td><span class="vtag">${r.vessel||""}</span></td>
+      <td style="font-size:12px">${r.cook||""}</td>
+      <td>${sc}</td><td>${photoCell}</td><td>${sp}</td>
+      <td><button class="btn btn-s btn-sm" onclick="openDetail('${r.id}')">VIEW</button>${mgr}</td>
+    </tr>`;
   }).join("");
 }
 
-/* DETAIL — loads photos on demand from /photos/{id} node */
-window.openDetail = id => {
-  const r=AR.find(x=>x.id===id); if(!r) return;
-  document.getElementById("dettit").textContent=(r.vessel||"")+" · "+(r.date||"");
-  document.getElementById("detbody").innerHTML="<div class=\"empty\"><div class=\"spin\"></div></div>";
+window._openDetail = id => {
+  const r = AR.find(x => x.id === id); if (!r) return;
+  document.getElementById("dettit").textContent = (r.vessel||"") + " · " + (r.date||"");
   document.getElementById("detmo").classList.add("open");
-
-  /* Photos are stored inside the report record */
-  const photos = r.photos || {};
-
-  const avg=AVG(r); const fm=r.fm||{};
-  const frows=[
+  const photos = r.photos || {}, avg = AVG(r), fm = r.fm || {};
+  const frows = [
     ["&#127859; Breakfast Main",fm.bkm],["&#129379; Breakfast Side",fm.bks],
     ["&#127858; Lunch Main",fm.lnm],["&#129367; Lunch Side/Soup",fm.lns],
     ["&#127835; Dinner Main",fm.dnm],["&#129382; Dinner Side",fm.dns],
     ["&#127854; Dessert",fm.des],["&#9749; Snack/Tea",fm.snk],
     ["&#129380; Beverages",fm.bev],["&#128230; Special Diet",fm.spc],
-  ].filter(([,v])=>v).map(([k,v])=>
-    "<div style=\"display:grid;grid-template-columns:130px 1fr;gap:7px;padding:5px 0;border-bottom:1px solid rgba(42,49,72,.35)\">"
-    +"<div style=\"font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--mut)\">"+k+"</div>"
-    +"<div style=\"font-size:13px\">"+v+"</div></div>"
-  ).join("")||"<p style=\"color:var(--mut);font-size:12px\">No menu entered.</p>";
-
-  const scores=[["Food Quality",r.sc?.food],["Presentation",r.sc?.pres],["Hygiene",r.sc?.hyg],["Variety",r.sc?.var],["Portion",r.sc?.por]]
-    .filter(([,v])=>v!=null)
-    .map(([k,v])=>"<div class=\"sr\"><div>"+k+"</div><span class=\"sbadge "+SC(v)+"\">"+v+"</span></div>")
-    .join("")||"<p style=\"color:var(--mut);font-size:12px\">No scores.</p>";
-
-  const mealPH=MEAL_Z.map(z=>{
-    const imgs=photos[z]||[];
-    const ph=imgs.length?imgs.map(u=>"<img class=\"dp\" src=\""+u+"\" loading=\"lazy\" onclick=\"openLB('"+u+"')\" onerror=\"this.style.display='none'\">").join("")
-      :"<span style=\"color:var(--mut);font-size:11px\">None</span>";
-    return "<div class=\"psl\">"+ZONES[z].label+" ("+(imgs.length)+")</div><div class=\"dph\">"+ph+"</div>";
+  ].filter(([,v]) => v).map(([k,v]) =>
+    `<div style="display:grid;grid-template-columns:130px 1fr;gap:7px;padding:5px 0;border-bottom:1px solid rgba(42,49,72,.35)">
+      <div style="font-family:IBM Plex Mono,monospace;font-size:10px;color:var(--mut)">${k}</div>
+      <div style="font-size:13px">${v}</div></div>`
+  ).join("") || '<p style="color:var(--mut);font-size:12px">No menu entered.</p>';
+  const scores = [["Food Quality",r.sc?.food],["Presentation",r.sc?.pres],["Hygiene",r.sc?.hyg],["Variety",r.sc?.var],["Portion",r.sc?.por]]
+    .filter(([,v]) => v != null)
+    .map(([k,v]) => `<div class="sr"><div>${k}</div><span class="sbadge ${SC(v)}">${v}</span></div>`)
+    .join("") || '<p style="color:var(--mut);font-size:12px">No scores.</p>';
+  const rz = zones => zones.map(z => {
+    const imgs = Array.isArray(photos[z]) ? photos[z] : [];
+    const ph = imgs.length
+      ? imgs.map(u => `<img class="dp" src="${u}" loading="lazy" onclick="openLB('${u}')" onerror="this.style.display='none'">`).join("")
+      : '<span style="color:var(--mut);font-size:11px">None</span>';
+    return `<div class="psl">${ZONES[z].label} (${imgs.length})</div><div class="dph">${ph}</div>`;
   }).join("");
-
-  const storePH=STORAGE_Z.map(z=>{
-    const imgs=photos[z]||[];
-    const ph=imgs.length?imgs.map(u=>"<img class=\"dp\" src=\""+u+"\" loading=\"lazy\" onclick=\"openLB('"+u+"')\" onerror=\"this.style.display='none'\">").join("")
-      :"<span style=\"color:var(--mut);font-size:11px\">None</span>";
-    return "<div class=\"psl\">"+ZONES[z].label+" ("+(imgs.length)+")</div><div class=\"dph\">"+ph+"</div>";
-  }).join("");
-
-  const coms=(r.comments||[]).map(c=>"<div class=\"cbox\"><div class=\"cmeta\">"+c.author+" &middot; "+new Date(c.ts).toLocaleString()+"</div><div class=\"ctxt\">"+c.text+"</div></div>").join("")
-    ||"<p style=\"color:var(--mut);font-size:12px\">No comments.</p>";
-
-  const addC=CU.role==="manager"
-    ?"<div style=\"margin-top:10px\"><textarea class=\"fctl\" id=\"cinput\" placeholder=\"Manager comment...\" style=\"margin-bottom:7px;min-height:75px\"></textarea>"
-     +"<div style=\"display:flex;gap:8px;flex-wrap:wrap\">"
-     +"<button class=\"btn btn-p btn-sm\" style=\"width:auto;padding:10px 22px\" onclick=\"saveComment('"+id+"')\">SAVE COMMENT</button>"
-     +"<button class=\"btn btn-d btn-sm\" style=\"width:auto;padding:10px 22px\" onclick=\"deleteReport('"+id+"')\">&#128465; DELETE</button>"
-     +"</div></div>":"";
-
-  document.getElementById("detbody").innerHTML=
-    "<div style=\"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px\">"
-    +"<div><div class=\"flbl\">Cook</div><div style=\"margin-top:3px;font-size:13px\">"+(r.cook||"&#8212;")+"</div></div>"
-    +"<div><div class=\"flbl\">Vessel</div><div style=\"margin-top:3px\"><span class=\"vtag\">"+(r.vessel||"&#8212;")+"</span></div></div>"
-    +"<div><div class=\"flbl\">Meal</div><div style=\"margin-top:3px;font-size:13px\">"+(r.meal||"&#8212;")+"</div></div>"
-    +"<div><div class=\"flbl\">Crew</div><div style=\"margin-top:3px;font-size:13px\">"+(r.crew||"&#8212;")+"</div></div>"
-    +"<div style=\"grid-column:1/-1\"><div class=\"flbl\">Remarks</div><div style=\"margin-top:3px;font-size:13px\">"+(r.notes||"&#8212;")+"</div></div>"
-    +"</div>"
-    +"<div style=\"margin-bottom:16px\"><div class=\"flbl\" style=\"margin-bottom:7px\">FOOD MENU</div>"+frows+"</div>"
-    +"<div style=\"margin-bottom:16px\"><div class=\"flbl\" style=\"margin-bottom:7px\">SCORES "+(avg?"<span style=\"color:var(--acc);margin-left:7px\">AVG "+avg+"</span>":"")+"</div><div style=\"max-width:380px\">"+scores+"</div></div>"
-    +"<div style=\"margin-bottom:16px\"><div class=\"flbl\" style=\"margin-bottom:7px\">MEAL PHOTOS</div>"+mealPH+"</div>"
-    +"<div style=\"margin-bottom:16px\"><div class=\"flbl\" style=\"margin-bottom:7px\">STORAGE PHOTOS</div>"+storePH+"</div>"
-    +"<div><div class=\"flbl\" style=\"margin-bottom:7px\">COMMENTS</div>"+coms+addC+"</div>";
+  const coms = (r.comments||[]).map(c =>
+    `<div class="cbox"><div class="cmeta">${c.author} &middot; ${new Date(c.ts).toLocaleString()}</div><div class="ctxt">${c.text}</div></div>`
+  ).join("") || '<p style="color:var(--mut);font-size:12px">No comments.</p>';
+  const scH = CU.role === "manager"
+    ? `<div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">SCORES ${avg?`<span style="color:var(--acc);margin-left:7px">AVG ${avg}</span>`:""}</div><div style="max-width:380px">${scores}</div></div>` : "";
+  const addC = CU.role === "manager"
+    ? `<div style="margin-top:10px"><textarea class="fctl" id="cinput" placeholder="Manager comment..." style="margin-bottom:7px;min-height:75px"></textarea>
+       <div style="display:flex;gap:8px;flex-wrap:wrap">
+         <button class="btn btn-p btn-sm" style="width:auto;padding:10px 22px" onclick="saveComment('${id}')">SAVE COMMENT</button>
+         <button class="btn btn-d btn-sm" style="width:auto;padding:10px 22px" onclick="deleteReport('${id}')">&#128465; DELETE</button>
+       </div></div>` : "";
+  document.getElementById("detbody").innerHTML =
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div><div class="flbl">Cook</div><div style="margin-top:3px;font-size:13px">${r.cook||"&#8212;"}</div></div>
+      <div><div class="flbl">Vessel</div><div style="margin-top:3px"><span class="vtag">${r.vessel||"&#8212;"}</span></div></div>
+      <div><div class="flbl">Crew</div><div style="margin-top:3px;font-size:13px">${r.crew||"&#8212;"}</div></div>
+      <div style="grid-column:1/-1"><div class="flbl">Remarks</div><div style="margin-top:3px;font-size:13px">${r.notes||"&#8212;"}</div></div>
+    </div>
+    <div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">FOOD MENU</div>${frows}</div>
+    ${scH}
+    <div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">MEAL PHOTOS</div>${rz(MEAL_Z)}</div>
+    <div style="margin-bottom:16px"><div class="flbl" style="margin-bottom:7px">STORAGE PHOTOS</div>${rz(STORAGE_Z)}</div>
+    <div><div class="flbl" style="margin-bottom:7px">COMMENTS</div>${coms}${addC}</div>`;
 };
 
-window.saveComment = async id => {
-  const txt=document.getElementById("cinput").value.trim();
-  if(!txt){toast("Comment empty","error");return;}
+window._saveComment = async id => {
+  const txt = document.getElementById("cinput").value.trim();
+  if (!txt) { toast("Comment empty", "error"); return; }
   try {
-    const r=AR.find(x=>x.id===id);
-    const comments=[...(r.comments||[]),{author:CU.name,text:txt,ts:Date.now()}];
-    await update(ref(db,"reports/"+id),{comments,reviewed:true});
-    r.comments=comments; r.reviewed=true;
-    toast("Saved","success"); openDetail(id); doFilter();
-  } catch(e){toast("Failed: "+e.message,"error");}
+    const r = AR.find(x => x.id === id);
+    const comments = [...(r.comments||[]), {author:CU.name, text:txt, ts:Date.now()}];
+    await update(ref(db, "reports/"+id), {comments, reviewed:true});
+    r.comments = comments; r.reviewed = true;
+    toast("Saved", "success"); window._openDetail(id); window._doFilter();
+  } catch(e) { toast("Failed: " + e.message, "error"); }
 };
 
-window.deleteReport = async id => {
-  const r=AR.find(x=>x.id===id); if(!r) return;
-  if(!confirm("DELETE: "+(r.vessel||"")+" "+(r.date||"")+" "+(r.meal||"")+"?\nCannot be undone.")) return;
-  loading(true,"DELETING...");
+window._deleteReport = async id => {
+  const r = AR.find(x => x.id === id); if (!r) return;
+  if (!confirm("DELETE report for " + (r.vessel||"") + " on " + (r.date||"") + "?\nCannot be undone.")) return;
+  loading(true, "DELETING...");
   try {
-    await remove(ref(db,"reports/"+id));
-    await remove(ref(db,"photos/"+id));
-    AR=AR.filter(x=>x.id!==id);
-    doStats(); doFilter(); loading(false);
-    toast("Report deleted","success");
+    for (const z of ZK) { for (const p of (r.photoPaths?.[z]||[])) { try { await deleteObject(sref(st,p)); } catch(e){} } }
+    await remove(ref(db, "reports/"+id));
+    AR = AR.filter(x => x.id !== id);
+    doStats(); drawTable(AR); loading(false);
+    toast("Report deleted", "success");
     document.getElementById("detmo").classList.remove("open");
-  } catch(e){loading(false);toast("Delete failed: "+e.message,"error");}
+  } catch(e) { loading(false); toast("Delete failed: " + e.message, "error"); }
 };
 
-window.openLB = url => { document.getElementById("lbimg").src=url; document.getElementById("lb").classList.add("open"); };
-document.getElementById("lb").addEventListener("click",e=>{ if(e.target!==document.getElementById("lbimg")) closeLB(); });
+document.getElementById("lb").addEventListener("click", e => { if (e.target !== document.getElementById("lbimg")) window._closeLB(); });
 
-/* PHOTO SELECTION */
-window.addPhotos = async (ev, zone) => {
-  const files=Array.from(ev.target.files||[]);
-  ev.target.value="";
-  if(!files.length) return;
-  const avail=ZONES[zone].max-PD[zone].length;
-  if(avail<=0){toast(ZONES[zone].label+" full ("+ZONES[zone].max+" max)","warn");return;}
-  const toProcess=files.slice(0,avail);
-  if(files.length>avail) toast("Only "+avail+" more slots in "+ZONES[zone].label,"warn");
-
-  const prg=document.getElementById("prg-"+zone);
-  const prgb=document.getElementById("prgb-"+zone);
-  const zst=document.getElementById("zst-"+zone);
-  prg.style.display="block"; prgb.style.width="0";
-
-  const seen=new Set(ZK.flatMap(z=>PD[z].map(p=>p.hash)));
-  let done=0, skipped=0;
-
-  for(const f of toProcess){
-    zst.textContent="Processing "+(done+1)+"/"+toProcess.length+"...";
+window._addPhotos = async (ev, zone) => {
+  const files = Array.from(ev.target.files||[]); ev.target.value = "";
+  if (!files.length) return;
+  const avail = ZONES[zone].max - PD[zone].length;
+  if (avail <= 0) { toast(ZONES[zone].label + " full", "warn"); return; }
+  const toProcess = files.slice(0, avail);
+  if (files.length > avail) toast("Only " + avail + " more slots", "warn");
+  const prg = document.getElementById("prg-"+zone);
+  const prgb = document.getElementById("prgb-"+zone);
+  const zst = document.getElementById("zst-"+zone);
+  prg.style.display = "block"; prgb.style.width = "0";
+  let done = 0;
+  for (const f of toProcess) {
+    zst.textContent = "Compressing " + (done+1) + "/" + toProcess.length + "...";
     try {
-      const h=await fileHash(f);
-      if(seen.has(h)){skipped++;done++;prgb.style.width=Math.round(done/toProcess.length*100)+"%";await Y();continue;}
-      seen.add(h);
-      const b64=await compressToB64(f);
-      const res=await fetch(b64); const blob=await res.blob();
-      const localUrl=URL.createObjectURL(blob);
-      PD[zone].push({b64,hash:h,localUrl,name:f.name});
+      const blob = await compressToBlob(f);
+      PD[zone].push({blob, localUrl:URL.createObjectURL(blob), name:f.name, size:blob.size});
       done++;
-    } catch(e){toast("Error: "+f.name,"error");done++;}
-    prgb.style.width=Math.round(done/toProcess.length*100)+"%";
+    } catch(e) { toast("Error: " + f.name, "error"); done++; }
+    prgb.style.width = Math.round(done/toProcess.length*100) + "%";
     await Y();
   }
-
-  prg.style.display="none";
-  if(skipped>0) toast(skipped+" duplicate"+(skipped>1?"s":"")+" skipped","warn");
-  zst.textContent=PD[zone].length?PD[zone].length+" photo"+(PD[zone].length>1?"s":"")+" ready":"";
-  document.getElementById("cnt-"+zone).textContent=PD[zone].length+"/"+ZONES[zone].max;
+  prg.style.display = "none";
+  const kb = Math.round(PD[zone].reduce((s,p) => s+p.size, 0)/1024);
+  zst.textContent = PD[zone].length + " photo" + (PD[zone].length>1?"s":"") + " ready (~"+kb+"KB)";
+  document.getElementById("cnt-"+zone).textContent = PD[zone].length + "/" + ZONES[zone].max;
   drawPreviews(zone);
 };
 
-function drawPreviews(zone){
-  const c=document.getElementById("prv-"+zone);
-  const f=document.createDocumentFragment();
-  PD[zone].forEach((p,i)=>{
-    const w=document.createElement("div"); w.className="pvw";
-    const img=document.createElement("img"); img.src=p.localUrl; img.loading="lazy";
-    const btn=document.createElement("button"); btn.className="pvr"; btn.innerHTML="&#215;";
-    btn.onclick=()=>rmPhoto(zone,i);
+function drawPreviews(zone) {
+  const c = document.getElementById("prv-"+zone), f = document.createDocumentFragment();
+  PD[zone].forEach((p,i) => {
+    const w = document.createElement("div"); w.className = "pvw";
+    const img = document.createElement("img"); img.src = p.localUrl; img.loading = "lazy";
+    const btn = document.createElement("button"); btn.className = "pvr"; btn.innerHTML = "&#215;";
+    btn.onclick = () => window._rmPhoto(zone, i);
     w.appendChild(img); w.appendChild(btn); f.appendChild(w);
   });
-  c.innerHTML=""; c.appendChild(f);
+  c.innerHTML = ""; c.appendChild(f);
 }
 
-window.rmPhoto=(zone,i)=>{
+window._rmPhoto = (zone, i) => {
   URL.revokeObjectURL(PD[zone][i].localUrl);
-  PD[zone].splice(i,1); drawPreviews(zone);
-  document.getElementById("cnt-"+zone).textContent=PD[zone].length+"/"+ZONES[zone].max;
-  document.getElementById("zst-"+zone).textContent=PD[zone].length?PD[zone].length+" ready":"";
+  PD[zone].splice(i, 1); drawPreviews(zone);
+  document.getElementById("cnt-"+zone).textContent = PD[zone].length + "/" + ZONES[zone].max;
+  document.getElementById("zst-"+zone).textContent = PD[zone].length ? PD[zone].length + " ready" : "";
 };
 
-ZK.forEach(z=>{
-  const d=document.getElementById("drop-"+z); if(!d) return;
-  d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("over");});
-  d.addEventListener("dragleave",()=>d.classList.remove("over"));
-  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("over");
-    if(e.dataTransfer.files.length) addPhotos({target:{files:e.dataTransfer.files,value:""}},z);});
+ZK.forEach(z => {
+  const d = document.getElementById("drop-"+z); if (!d) return;
+  d.addEventListener("dragover", e => { e.preventDefault(); d.classList.add("over"); });
+  d.addEventListener("dragleave", () => d.classList.remove("over"));
+  d.addEventListener("drop", e => { e.preventDefault(); d.classList.remove("over");
+    if (e.dataTransfer.files.length) window._addPhotos({target:{files:e.dataTransfer.files,value:""}}, z); });
 });
 
-/* SUBMIT
-   SPLIT STORAGE: report metadata → /reports/{id} (small, fast)
-                  photos (b64)   → /photos/{id}   (separate node, loaded on demand)
-   This keeps the reports list load fast for manager even with 100s of reports.
-   Each cook writes to a unique push ID — concurrent submits never conflict. */
-window.submitReport = async () => {
-  const date=document.getElementById("f-date").value;
-  const vessel=document.getElementById("f-vessel").value;
-  const cook=document.getElementById("f-cook").value.trim();
-  const meal=document.getElementById("f-meal").value;
-  if(!date||!vessel||!cook||!meal){toast("Fill required: Date, Vessel, Cook, Meal","error");return;}
-
-  const dup=AR.find(r=>r.date===date&&r.vessel===vessel&&r.meal===meal&&r.cookPin===CU.pin);
-  if(dup){
-    const el=document.getElementById("dupalert");
-    el.textContent="Duplicate: "+vessel+" "+meal+" on "+date+" already submitted.";
-    el.style.display="block"; toast("Duplicate!","error"); return;
-  }
-  document.getElementById("dupalert").style.display="none";
-
-  const btn=document.getElementById("subbtn");
-  btn.disabled=true; btn.textContent="SAVING...";
-
-  const totalPhotos=ZK.reduce((s,z)=>s+PD[z].length,0);
-  const banner=document.getElementById("upbanner");
-  const uptxt=document.getElementById("uptxt");
-  const upbar=document.getElementById("upbar");
-
-  /* Count total photos for progress */
-  let photoCount=0;
-  const photos={};
-  if(totalPhotos>0){
-    banner.classList.add("show"); upbar.style.width="0";
-    uptxt.textContent="Preparing photos...";
-    let done=0;
-    for(const zone of ZK){
-      photos[zone]=PD[zone].map(p=>p.b64);
-      photoCount+=PD[zone].length;
-      done+=PD[zone].length;
-      if(totalPhotos>0){ upbar.style.width=Math.round(done/totalPhotos*100)+"%"; await Y(); }
+window._submitReport = async () => {
+  const date   = document.getElementById("f-date").value;
+  const vessel = document.getElementById("f-vessel").value;
+  const cook   = document.getElementById("f-cook").value.trim();
+  if (!date||!vessel||!cook) { toast("Fill: Date, Vessel, Cook", "error"); return; }
+  document.getElementById("dupalert").style.display = "none";
+  const btn = document.getElementById("subbtn");
+  btn.disabled = true; btn.textContent = "UPLOADING...";
+  const totalPhotos = ZK.reduce((s,z) => s+PD[z].length, 0);
+  const nr = push(ref(db, "reports"));
+  const reportId = nr.key;
+  const photos = {}, photoPaths = {};
+  ZK.forEach(z => { photos[z] = []; photoPaths[z] = []; });
+  if (totalPhotos > 0) {
+    document.getElementById("upbanner").classList.add("show");
+    document.getElementById("upbar").style.width = "0";
+    document.getElementById("uptxt").textContent = "Uploading " + totalPhotos + " photo" + (totalPhotos>1?"s":"") + "...";
+    document.getElementById("upcount").textContent = "Please wait...";
+    let done = 0;
+    const tasks = [];
+    for (const zone of ZK) {
+      for (const p of PD[zone]) {
+        const sp = "photos/"+reportId+"/"+zone+"/"+Date.now()+"_"+Math.random().toString(36).slice(2)+".jpg";
+        tasks.push({zone, p, sp});
+      }
     }
-    banner.classList.remove("show");
-  } else {
-    ZK.forEach(z=>{ photos[z]=[]; });
+    await Promise.all(tasks.map(async ({zone, p, sp}) => {
+      try {
+        const snap = await uploadBytes(sref(st,sp), p.blob, {contentType:"image/jpeg"});
+        const url = await getDownloadURL(snap.ref);
+        photos[zone].push(url); photoPaths[zone].push(sp);
+      } catch(e) { toast("Upload failed: " + p.name, "error"); }
+      done++;
+      document.getElementById("upbar").style.width = Math.round(done/totalPhotos*100) + "%";
+    }));
+    document.getElementById("upbanner").classList.remove("show");
+    document.getElementById("upcount").textContent = "";
   }
-
-  loading(true,"SAVING REPORT...");
-
-  /* Metadata only — no photos here */
-  const report={
-    date,vessel,cook,cookPin:CU.pin,meal,
-    crew:parseInt(document.getElementById("f-crew").value)||null,
-    notes:document.getElementById("f-notes").value.trim(),
-    fm:{
-      bkm:document.getElementById("fd-bkm").value.trim(),bks:document.getElementById("fd-bks").value.trim(),
-      lnm:document.getElementById("fd-lnm").value.trim(),lns:document.getElementById("fd-lns").value.trim(),
-      dnm:document.getElementById("fd-dnm").value.trim(),dns:document.getElementById("fd-dns").value.trim(),
-      des:document.getElementById("fd-des").value.trim(),snk:document.getElementById("fd-snk").value.trim(),
-      bev:document.getElementById("fd-bev").value.trim(),spc:document.getElementById("fd-spc").value.trim(),
+  loading(true, "SAVING REPORT...");
+  const report = {
+    date, vessel, cook, cookPin: CU.pin,
+    crew:  parseInt(document.getElementById("f-crew").value)||null,
+    notes: document.getElementById("f-notes").value.trim(),
+    fm: {
+      bkm:document.getElementById("fd-bkm").value.trim(), bks:document.getElementById("fd-bks").value.trim(),
+      lnm:document.getElementById("fd-lnm").value.trim(), lns:document.getElementById("fd-lns").value.trim(),
+      dnm:document.getElementById("fd-dnm").value.trim(), dns:document.getElementById("fd-dns").value.trim(),
+      des:document.getElementById("fd-des").value.trim(), snk:document.getElementById("fd-snk").value.trim(),
+      bev:document.getElementById("fd-bev").value.trim(), spc:document.getElementById("fd-spc").value.trim(),
     },
-    sc:{
+    sc: {
       food:parseInt(document.getElementById("s-food").value)||null,
       pres:parseInt(document.getElementById("s-pres").value)||null,
       hyg: parseInt(document.getElementById("s-hyg").value)||null,
       var: parseInt(document.getElementById("s-var").value)||null,
       por: parseInt(document.getElementById("s-por").value)||null,
     },
-    photoCount,
+    photos, photoPaths, photoCount:totalPhotos,
     reviewed:false, comments:[], createdAt:Date.now(),
   };
-
   try {
-    const nr=push(ref(db,"reports"));
-    const reportId=nr.key;
-
-    /* Write everything in one shot — metadata + photos together */
-    report.photos = photos;
-    loading(true,"SAVING REPORT...");
     await set(nr, report);
-
-    AR.unshift({id:reportId,...report});
-    doStats(); doFilter();
-
-    /* Reset */
-    ["f-vessel","f-meal","f-crew","f-notes"].forEach(id=>document.getElementById(id).value="");
-    ["fd-bkm","fd-bks","fd-lnm","fd-lns","fd-dnm","fd-dns","fd-des","fd-snk","fd-bev","fd-spc"]
-      .forEach(id=>document.getElementById(id).value="");
-    ["s-food","s-pres","s-hyg","s-var","s-por"].forEach(id=>document.getElementById(id).value="");
-    document.getElementById("f-date").valueAsDate=new Date();
-    if(CU.role!=="cook") document.getElementById("f-cook").value="";
-    else if(CU.vessel) setTimeout(()=>{document.getElementById("f-vessel").value=CU.vessel;},50);
-    ZK.forEach(z=>{
-      PD[z].forEach(p=>URL.revokeObjectURL(p.localUrl)); PD[z]=[]; drawPreviews(z);
-      document.getElementById("cnt-"+z).textContent="0/"+ZONES[z].max;
-      document.getElementById("zst-"+z).textContent="";
+    AR.unshift({id:reportId, ...report});
+    doStats(); drawTable(AR);
+    ["f-vessel","f-crew","f-notes"].forEach(id => document.getElementById(id).value="");
+    ["fd-bkm","fd-bks","fd-lnm","fd-lns","fd-dnm","fd-dns","fd-des","fd-snk","fd-bev","fd-spc"].forEach(id => document.getElementById(id).value="");
+    ["s-food","s-pres","s-hyg","s-var","s-por"].forEach(id => document.getElementById(id).value="");
+    document.getElementById("f-date").valueAsDate = new Date();
+    if (CU.role !== "cook") document.getElementById("f-cook").value = "";
+    else if (CU.vessel) setTimeout(() => { document.getElementById("f-vessel").value = CU.vessel; }, 50);
+    ZK.forEach(z => {
+      PD[z].forEach(p => URL.revokeObjectURL(p.localUrl)); PD[z] = []; drawPreviews(z);
+      document.getElementById("cnt-"+z).textContent = "0/"+ZONES[z].max;
+      document.getElementById("zst-"+z).textContent = "";
     });
-
     loading(false); btn.disabled=false; btn.textContent="SUBMIT REPORT";
-    toast("Report submitted!","success");
-    goTab("reports",document.querySelector(".tab"));
-  } catch(e){
+    toast("Report submitted!", "success");
+    window._goTab("reports", document.querySelector(".tab"));
+  } catch(e) {
     loading(false); btn.disabled=false; btn.textContent="SUBMIT REPORT";
-    toast("Save failed: "+e.message,"error",6000);
+    toast("Save failed: " + e.message, "error", 6000);
   }
 };
 
-/* CLEANUP */
-window.runCleanup = async (manual=false) => {
-  const cutoff=Date.now()-(CLEANUP_DAYS*86400000);
+window._addPin = async () => {
+  const name=document.getElementById("new-name").value.trim(), pin=document.getElementById("new-pin").value.trim();
+  const role=document.getElementById("new-role").value, vessel=document.getElementById("new-vessel").value;
+  if (!name||!pin) { toast("Enter name and PIN","error"); return; }
+  if (pin.length!==4||!/^\d{4}$/.test(pin)) { toast("PIN must be 4 digits","error"); return; }
+  if (PINS_CACHE[pin]) { toast("PIN "+pin+" already exists","error"); return; }
   try {
-    const snap=await get(ref(db,"reports"));
-    if(!snap.exists()){if(manual)toast("No reports","success");return;}
-    const old=[];
-    snap.forEach(c=>{const r=c.val();if(r.createdAt&&r.createdAt<cutoff) old.push(c.key);});
-    if(!old.length){if(manual)toast("No old photos to remove","success");return;}
-    for(const id of old){
-      await remove(ref(db,"photos/"+id));
-      await update(ref(db,"reports/"+id),{photoCount:0,photosCleared:true,photoClearedAt:Date.now()});
-    }
-    AR=AR.map(r=>old.includes(r.id)?{...r,photoCount:0,photosCleared:true}:r);
-    doFilter();
-    if(manual) toast("Cleared photos from "+old.length+" old reports","success");
-  } catch(e){if(manual)toast("Error: "+e.message,"error");}
+    await set(ref(db,"pins/"+pin), {name,role,vessel,addedAt:Date.now()});
+    PINS_CACHE[pin] = {name,role,vessel,addedAt:Date.now()};
+    document.getElementById("new-name").value=""; document.getElementById("new-pin").value="";
+    document.getElementById("new-vessel").value=""; document.getElementById("new-role").value="cook";
+    drawPinTable(); toast("PIN "+pin+" added for "+name,"success");
+  } catch(e) { toast("Failed: "+e.message,"error"); }
 };
 
-/* ADMIN */
-async function loadAdmin(){
-  if(CU.role!=="manager") return;
-  const el=document.getElementById("admincnt"); el.textContent="Loading...";
-  const byV={}; VESSELS.forEach(v=>byV[v]=[]);
-  AR.forEach(r=>{if(byV[r.vessel]) byV[r.vessel].push(r);});
-  const rows=VESSELS.map(v=>{
-    const rr=byV[v];
-    const avgs=rr.map(r=>AVG(r)).filter(Boolean).map(Number);
-    const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):"&#8212;";
-    const pend=rr.filter(r=>!r.reviewed).length;
-    const pics=rr.reduce((s,r)=>s+(r.photoCount||0),0);
-    return "<tr>"
-      +"<td style=\"padding:6px 9px\"><span class=\"vtag\">"+v+"</span></td>"
-      +"<td style=\"padding:6px 9px;text-align:center\">"+rr.length+"</td>"
-      +"<td style=\"padding:6px 9px;text-align:center\">"+(pend>0?"<span style=\"color:var(--err)\">"+pend+"</span>":"0")+"</td>"
-      +"<td style=\"padding:6px 9px;text-align:center\">"+(avgs.length?"<span class=\"sbadge "+SC(parseFloat(avg))+"\">"+avg+"</span>":avg)+"</td>"
-      +"<td style=\"padding:6px 9px;text-align:center;color:var(--mut)\">"+pics+"</td>"
-      +"</tr>";
-  }).join("");
-  el.innerHTML="<div style=\"overflow-x:auto\"><table style=\"width:100%;border-collapse:collapse\"><thead><tr>"
-    +["VESSEL","REPORTS","PENDING","AVG SCORE","PHOTOS"].map(h=>"<th style=\"padding:6px 9px;text-align:"+(h==="VESSEL"?"left":"center")+";border-bottom:1px solid var(--bdr);font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;color:var(--mut)\">"+h+"</th>").join("")
-    +"</tr></thead><tbody>"+rows+"</tbody></table></div>";
+window._deletePin = async pin => {
+  if (pin===CU.pin) { toast("Cannot delete your own PIN","error"); return; }
+  if (!confirm("Delete PIN "+pin+" ("+PINS_CACHE[pin]?.name+")?")) return;
+  try { await remove(ref(db,"pins/"+pin)); delete PINS_CACHE[pin]; drawPinTable(); toast("PIN deleted","success"); }
+  catch(e) { toast("Failed: "+e.message,"error"); }
+};
+
+function drawPinTable() {
+  const tb = document.getElementById("pin-tbody");
+  const entries = Object.entries(PINS_CACHE).sort((a,b) => a[1].name.localeCompare(b[1].name));
+  if (!entries.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:20px">No PINs yet</td></tr>'; return; }
+  tb.innerHTML = entries.map(([pin,u]) => `<tr>
+    <td>${u.name}</td><td>${u.vessel||"&#8212;"}</td>
+    <td class="pin-show">${pin}</td>
+    <td class="${u.role==="manager"?"pin-role-m":"pin-role-c"}">${u.role}</td>
+    <td style="color:var(--mut)">${u.addedAt?new Date(u.addedAt).toLocaleDateString():""}</td>
+    <td>${pin!==CU.pin?`<button class="btn btn-d btn-sm" onclick="deletePin('${pin}')">DEL</button>`:'<span style="color:var(--mut);font-size:10px">YOU</span>'}</td>
+  </tr>`).join("");
 }
 
-document.querySelectorAll(".mo").forEach(el=>{
-  el.addEventListener("click",e=>{if(e.target===el)el.classList.remove("open");});
+window._runCleanup = async (manual=false) => {
+  const cutoff = Date.now() - (CLEANUP_DAYS*86400000);
+  try {
+    const snap = await get(ref(db,"reports"));
+    if (!snap.exists()) { if(manual) toast("No reports","success"); return; }
+    const old = [];
+    snap.forEach(c => { const r=c.val(); if(r.createdAt&&r.createdAt<cutoff&&!r.photosCleared) old.push({id:c.key,...r}); });
+    if (!old.length) { if(manual) toast("No old photos","success"); return; }
+    for (const r of old) {
+      for (const z of ZK) { for (const p of (r.photoPaths?.[z]||[])) { try { await deleteObject(sref(st,p)); } catch(e){} } }
+      const cleared = {}; ZK.forEach(z => { cleared[z]=[]; });
+      await update(ref(db,"reports/"+r.id), {photos:cleared,photoPaths:{},photoCount:0,photosCleared:true,photoClearedAt:Date.now()});
+    }
+    AR = AR.map(r => { if(old.find(o=>o.id===r.id)){const c={};ZK.forEach(z=>{c[z]=[];});return{...r,photos:c,photoCount:0,photosCleared:true};} return r; });
+    drawTable(AR);
+    if (manual) toast("Cleared photos from "+old.length+" old report"+(old.length>1?"s":""),"success");
+  } catch(e) { if(manual) toast("Error: "+e.message,"error"); }
+};
+
+async function loadAdmin() {
+  if (CU.role!=="manager") return;
+  const el = document.getElementById("admincnt"); el.textContent="Loading...";
+  const byV = {}; VESSELS.forEach(v=>byV[v]=[]);
+  AR.forEach(r => { if(byV[r.vessel]) byV[r.vessel].push(r); });
+  const rows = VESSELS.map(v => {
+    const rr=byV[v], avgs=rr.map(r=>AVG(r)).filter(Boolean).map(Number);
+    const avg=avgs.length?(avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(1):"&#8212;";
+    const pend=rr.filter(r=>!r.reviewed).length, pics=rr.reduce((s,r)=>s+(r.photoCount||0),0);
+    return `<tr>
+      <td style="padding:6px 9px"><span class="vtag">${v}</span></td>
+      <td style="padding:6px 9px;text-align:center">${rr.length}</td>
+      <td style="padding:6px 9px;text-align:center">${pend>0?`<span style="color:var(--err)">${pend}</span>`:"0"}</td>
+      <td style="padding:6px 9px;text-align:center">${avgs.length?`<span class="sbadge ${SC(parseFloat(avg))}">${avg}</span>`:avg}</td>
+      <td style="padding:6px 9px;text-align:center;color:var(--mut)">${pics}</td>
+    </tr>`;
+  }).join("");
+  el.innerHTML = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse"><thead><tr>
+    ${["VESSEL","REPORTS","PENDING","AVG SCORE","PHOTOS"].map(h=>`<th style="padding:6px 9px;text-align:${h==="VESSEL"?"left":"center"};border-bottom:1px solid var(--bdr);font-family:IBM Plex Mono,monospace;font-size:9px;letter-spacing:1px;color:var(--mut)">${h}</th>`).join("")}
+  </tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+document.querySelectorAll(".mo").forEach(el => {
+  el.addEventListener("click", e => { if (e.target===el) el.classList.remove("open"); });
 });
 </script>
 </body>
